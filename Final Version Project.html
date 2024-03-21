@@ -1,0 +1,2680 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.433">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Project 1</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="Project_1_Final_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Project_1_Final_files/libs/quarto-html/quarto.js"></script>
+<script src="Project_1_Final_files/libs/quarto-html/popper.min.js"></script>
+<script src="Project_1_Final_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Project_1_Final_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Project_1_Final_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Project_1_Final_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Project_1_Final_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Project_1_Final_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Project_1_Final_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Project 1</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="brief-problem-description" class="level1">
+<h1>Brief Problem Description:</h1>
+<p>Lightning McQueen is lost. He is now in Radiator Springs where he found a new home. He met Mator, a new friend of his, and Mator wants to start a new used car resale business. But Mator does not know how to set a price to a car. But Mator has received an incomplete data set about used car sales. Mator reached out to us; Marcus, Tai, and Simon because he heard we are some of the best business analytics students at Seattle University.</p>
+</section>
+<section id="objective" class="level1">
+<h1>Objective:</h1>
+<p>Mator is asking us to use our expertise to predict whether a used car price should be high or low.</p>
+</section>
+<section id="data-set" class="level1">
+<h1>Data Set:</h1>
+<p>As scholars at the Albers school of business we see some issues with this incomplete data set. We say the data set is incomplete because it does not have exact prices. Instead we will use high vs low to determine how to set the price (presumably based on prevailing market rates) and market used cars. High priced ones will be marketed differently from low priced ones. While the price for some used cars are obvious, others are not. From the data set we will build and select an appropriate model for the company and predict the price of the car if it would be higher or lower for a new customer.</p>
+<p>The reason we choose the positive to be low is because the description of our assignment it states that normally this data is set to the minority class. Which in this case is the low price norm.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: ggplot2</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: lattice</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lattice)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'dplyr'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ forcats   1.0.0     ✔ stringr   1.5.0
+✔ lubridate 1.9.2     ✔ tibble    3.2.1
+✔ purrr     1.0.1     ✔ tidyr     1.3.0
+✔ readr     2.1.4     </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+✖ purrr::lift()   masks caret::lift()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart.plot)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(forecast)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Registered S3 method overwritten by 'quantmod':
+  method            from
+  as.zoo.data.frame zoo </code></pre>
+</div>
+</div>
+</section>
+<section id="i.-data" class="level1">
+<h1>I. Data</h1>
+<section id="clean-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="clean-the-data">1. Clean the Data</h2>
+<p>We need to clean the data to get it ready for analysis.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>cars <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"car_train_class_12.csv"</span>, <span class="at">header =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(cars, <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   X.1       X               vin back_legroom       body_type    cabin
+1    1  693300 KM8J3CALXMU301004         38.2 SUV / Crossover         
+2    2  186812 1G1JD6SB2L4136775         34.6       Hatchback         
+3    3  951451 5J6RW2H96LL022148         40.4 SUV / Crossover         
+4    4 1568313 KM8K2CAA5LU562934         34.6 SUV / Crossover         
+5    5 1408062 5FNYF8H99LB008980         39.6 SUV / Crossover         
+6    6  924769 1FTEW1EP3LKE58267         43.6    Pickup Truck         
+7    7 1538348 1FT7W2BT9KEG46773         43.6    Pickup Truck Crew Cab
+8    8   81900 4S4BSANC3K3294390         38.1           Wagon         
+9    9 1551017 1G1105S31LU105922         39.8           Sedan         
+10  10 1506441 1N4AZ1CPXLC301005           NA       Hatchback         
+                  city daysonmarket dealer_zip     engine_cylinders
+1            Chantilly           25      20151                   I4
+2              Pawling           10      12564                   I4
+3            Knoxville           50      37912                   I4
+4  Inver Grove Heights          134      55077                   I4
+5              Lincoln          197      68516                   V6
+6             Bay City           56      48706                   V6
+7                Miami           29      33126         V8 Biodiesel
+8                 Troy           75      12180                   H4
+9      Fort Lauderdale           33      33304 V6 Flex Fuel Vehicle
+10      Port Charlotte          219      33980                     
+   engine_displacement          engine_type        exterior_color fleet
+1                 2400                   I4             Dusk Blue      
+2                 1400                   I4    Cajun Red Tintcoat      
+3                 1500                   I4   Crystal Black Pearl      
+4                 2000                   I4             Pulse Red      
+5                 3500                   V6   Obsidian Blue Pearl      
+6                 3500                   V6         Silver Spruce False
+7                 6700         V8 Biodiesel Ingot Silver Metallic  True
+8                 2500                   H4     Crimson Red Pearl  True
+9                 3600 V6 Flex Fuel Vehicle   Silver Ice Metallic  True
+10                  NA                         2-Tone White/Black      
+   frame_damaged franchise_dealer franchise_make front_legroom fuel_tank_volume
+1                            True        Hyundai          41.5             16.4
+2                            True      Chevrolet          41.8             12.2
+3                            True          Honda          41.3             14.0
+4                            True        Hyundai          41.5             13.2
+5                            True          Honda          40.9             19.5
+6          False             True           Ford          43.9             26.0
+7          False            False                         43.9             34.0
+8          False             True         Subaru          42.9             18.5
+9          False             True      Chevrolet          45.8             18.5
+10                           True         Nissan                             NA
+           fuel_type has_accidents height horsepower            interior_color
+1           Gasoline                 65.0        181             Brown (Beige)
+2           Gasoline                 59.7        138                 Jet Black
+3           Gasoline                 66.5        190                     Black
+4           Gasoline                 61.6        147                      None
+5           Gasoline                 72.2        280                      Gray
+6           Gasoline         False   77.2        375 Gray (Medium Light Camel)
+7          Biodiesel         False   81.5        450                     Other
+8           Gasoline         False   66.1        175               Slate Black
+9  Flex Fuel Vehicle         False   58.9        305                 Jet Black
+10          Electric                   NA         NA                     Black
+   is_cpo is_new is_oemcpo length listed_date listing_color listing_id
+1   False   True     False  176.4  2020-08-16          BLUE  279447562
+2   False   True     False  159.8  2020-08-30           RED  280796643
+3   False   True     False  182.1  2020-07-22         BLACK  277235352
+4   False   True     False  164.0  2020-04-29           RED  271147110
+5   False   True     False  190.5  2020-02-26          BLUE  266916841
+6   False   True     False  231.9  2020-07-16        SILVER  276750193
+7   False  False     False  250.0  2020-08-12        SILVER  279042831
+8    True  False     False  189.9  2020-06-26           RED  275081413
+9   False  False     False  201.3  2020-08-09        SILVER  278777141
+10  False   True     False     NA  2020-02-04         WHITE  264965475
+                                                                                                                                                                                           major_options
+1                                                              ['Leather Seats', 'Alloy Wheels', 'Bluetooth', 'Backup Camera', 'Remote Start', 'Blind Spot Monitoring', 'Cargo Package', 'Heated Seats']
+2                                                                                                                    ['Alloy Wheels', 'Backup Camera', 'Android Auto', 'CarPlay', 'Convenience Package']
+3                                                                                               ['Leather Seats', 'Sunroof/Moonroof', 'Navigation System', 'Bluetooth', 'Backup Camera', 'Remote Start']
+4                                                                                                                                                                                                       
+5                                                                                  ['Sunroof/Moonroof', 'Navigation System', 'Adaptive Cruise Control', 'Alloy Wheels', 'Backup Camera', 'Heated Seats']
+6                                                                                                                    ['Navigation System', 'Alloy Wheels', 'Bluetooth', 'Backup Camera', 'Remote Start']
+7                                                                                                                                                                                      ['Backup Camera']
+8                ['Leather Seats', 'Sunroof/Moonroof', 'Navigation System', 'Adaptive Cruise Control', 'Alloy Wheels', 'Bluetooth', 'Backup Camera', 'Blind Spot Monitoring', 'Heated Seats', 'CarPlay']
+9            ['Leather Seats', 'Navigation System', 'Alloy Wheels', 'Bluetooth', 'Backup Camera', 'Remote Start', 'Blind Spot Monitoring', 'Parking Sensors', 'Heated Seats', 'Android Auto', 'CarPlay']
+10 ['Navigation System', 'Adaptive Cruise Control', 'Alloy Wheels', 'Technology Package', 'Bluetooth', 'Backup Camera', 'Remote Start', 'Blind Spot Monitoring', 'Heated Seats', 'Cold Weather Package']
+   make_name maximum_seating mileage       model_name owner_count
+1    Hyundai               5       5           Tucson           0
+2  Chevrolet               5      NA            Sonic           0
+3      Honda               5       0             CR-V           0
+4    Hyundai               5       4             Kona           0
+5      Honda               5       4         Passport           0
+6       Ford               6      10            F-150           0
+7       Ford               6   28096 F-250 Super Duty           1
+8     Subaru               5   23388          Outback           1
+9  Chevrolet               5   18683           Impala           1
+10    Nissan              NA     120             LEAF           0
+                power salvage savings_amount seller_rating  sp_id
+1  181 hp @ 6,000 RPM                      0      3.789474 370177
+2  138 hp @ 4,900 RPM                      0      4.333333 344283
+3  190 hp @ 5,600 RPM                      0      4.200000  59357
+4  147 hp @ 6,200 RPM                      0      4.000000 300069
+5  280 hp @ 6,000 RPM                      0      4.548387  59048
+6  395 hp @ 5,750 RPM   False              0      4.142857  56402
+7  450 hp @ 2,800 RPM   False          12787      2.398601 382122
+8  175 hp @ 5,800 RPM   False            229      3.739130 274312
+9  305 hp @ 6,800 RPM   False            473      3.739130 397830
+10                                         0      3.241379 276028
+                               sp_name theft_title                torque
+1                 Hyundai of Chantilly             175 lb-ft @ 4,000 RPM
+2            Ingersoll Auto of Pawling             148 lb-ft @ 2,500 RPM
+3                  Rusty Wallace Honda             179 lb-ft @ 2,000 RPM
+4                  Inver Grove Hyundai             132 lb-ft @ 4,500 RPM
+5                     Honda of Lincoln             262 lb-ft @ 4,700 RPM
+6                       Hagen Ford Inc       False 400 lb-ft @ 4,500 RPM
+7             Car Factory Outlet Miami       False 935 lb-ft @ 1,800 RPM
+8                       Carbone Subaru       False 174 lb-ft @ 4,000 RPM
+9  Grieco Chevrolet of Fort Lauderdale       False 264 lb-ft @ 5,300 RPM
+10                       Harbor Nissan                                  
+   transmission        transmission_display trimId           trim_name
+1             A                   Automatic t93993         Limited AWD
+2             A           6-Speed Automatic t85498    LT Hatchback FWD
+3             A                   Automatic t89603         Touring AWD
+4                                           t87010             SEL AWD
+5             A           9-Speed Automatic t90159         Touring AWD
+6             A                   Automatic t87739   XLT SuperCrew 4WD
+7             A           6-Speed Automatic t78394 Lariat Crew Cab 4WD
+8             A                   Automatic t82803    2.5i Limited AWD
+9             A 6-Speed Automatic Overdrive t86811         Premier FWD
+10            A                   Automatic t90999              SV FWD
+   wheel_system wheel_system_display wheelbase width year power_hp power_rpm
+1           AWD      All-Wheel Drive     105.1  72.8 2021      181      6000
+2           FWD    Front-Wheel Drive      99.4  68.3 2020      138      4900
+3           AWD      All-Wheel Drive     104.7  73.0 2020      190      5600
+4           AWD      All-Wheel Drive     102.4  70.9 2020      147      6200
+5           AWD      All-Wheel Drive     111.0  78.6 2020      280      6000
+6           4WD     Four-Wheel Drive     145.0  96.8 2020      395      5750
+7           4WD     Four-Wheel Drive     159.8 105.9 2019      450      2800
+8           AWD      All-Wheel Drive     108.1  81.3 2019      175      5800
+9           FWD    Front-Wheel Drive     111.7  84.3 2020      305      6800
+10          FWD    Front-Wheel Drive        NA    NA 2020       NA        NA
+   torque_lbft torque_rpm price_nom
+1          175       4000         0
+2          148       2500         0
+3          179       2000         0
+4          132       4500         0
+5          262       4700         0
+6          400       4500         0
+7          935       1800         0
+8          174       4000         0
+9          264       5300         0
+10          NA         NA         0</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(cars)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   29233 obs. of  59 variables:
+ $ X.1                 : int  1 2 3 4 5 6 7 8 9 10 ...
+ $ X                   : int  693300 186812 951451 1568313 1408062 924769 1538348 81900 1551017 1506441 ...
+ $ vin                 : chr  "KM8J3CALXMU301004" "1G1JD6SB2L4136775" "5J6RW2H96LL022148" "KM8K2CAA5LU562934" ...
+ $ back_legroom        : num  38.2 34.6 40.4 34.6 39.6 43.6 43.6 38.1 39.8 NA ...
+ $ body_type           : chr  "SUV / Crossover" "Hatchback" "SUV / Crossover" "SUV / Crossover" ...
+ $ cabin               : chr  "" "" "" "" ...
+ $ city                : chr  "Chantilly" "Pawling" "Knoxville" "Inver Grove Heights" ...
+ $ daysonmarket        : int  25 10 50 134 197 56 29 75 33 219 ...
+ $ dealer_zip          : chr  "20151" "12564" "37912" "55077" ...
+ $ engine_cylinders    : chr  "I4" "I4" "I4" "I4" ...
+ $ engine_displacement : int  2400 1400 1500 2000 3500 3500 6700 2500 3600 NA ...
+ $ engine_type         : chr  "I4" "I4" "I4" "I4" ...
+ $ exterior_color      : chr  "Dusk Blue" "Cajun Red Tintcoat" "Crystal Black Pearl" "Pulse Red" ...
+ $ fleet               : chr  "" "" "" "" ...
+ $ frame_damaged       : chr  "" "" "" "" ...
+ $ franchise_dealer    : chr  "True" "True" "True" "True" ...
+ $ franchise_make      : chr  "Hyundai" "Chevrolet" "Honda" "Hyundai" ...
+ $ front_legroom       : chr  "41.5" "41.8" "41.3" "41.5" ...
+ $ fuel_tank_volume    : num  16.4 12.2 14 13.2 19.5 26 34 18.5 18.5 NA ...
+ $ fuel_type           : chr  "Gasoline" "Gasoline" "Gasoline" "Gasoline" ...
+ $ has_accidents       : chr  "" "" "" "" ...
+ $ height              : num  65 59.7 66.5 61.6 72.2 77.2 81.5 66.1 58.9 NA ...
+ $ horsepower          : int  181 138 190 147 280 375 450 175 305 NA ...
+ $ interior_color      : chr  "Brown (Beige)" "Jet Black" "Black" "None" ...
+ $ is_cpo              : chr  "False" "False" "False" "False" ...
+ $ is_new              : chr  "True" "True" "True" "True" ...
+ $ is_oemcpo           : chr  "False" "False" "False" "False" ...
+ $ length              : num  176 160 182 164 190 ...
+ $ listed_date         : chr  "2020-08-16" "2020-08-30" "2020-07-22" "2020-04-29" ...
+ $ listing_color       : chr  "BLUE" "RED" "BLACK" "RED" ...
+ $ listing_id          : int  279447562 280796643 277235352 271147110 266916841 276750193 279042831 275081413 278777141 264965475 ...
+ $ major_options       : chr  "['Leather Seats', 'Alloy Wheels', 'Bluetooth', 'Backup Camera', 'Remote Start', 'Blind Spot Monitoring', 'Cargo"| __truncated__ "['Alloy Wheels', 'Backup Camera', 'Android Auto', 'CarPlay', 'Convenience Package']" "['Leather Seats', 'Sunroof/Moonroof', 'Navigation System', 'Bluetooth', 'Backup Camera', 'Remote Start']" "" ...
+ $ make_name           : chr  "Hyundai" "Chevrolet" "Honda" "Hyundai" ...
+ $ maximum_seating     : int  5 5 5 5 5 6 6 5 5 NA ...
+ $ mileage             : num  5 NA 0 4 4 ...
+ $ model_name          : chr  "Tucson" "Sonic" "CR-V" "Kona" ...
+ $ owner_count         : int  0 0 0 0 0 0 1 1 1 0 ...
+ $ power               : chr  "181 hp @ 6,000 RPM" "138 hp @ 4,900 RPM" "190 hp @ 5,600 RPM" "147 hp @ 6,200 RPM" ...
+ $ salvage             : chr  "" "" "" "" ...
+ $ savings_amount      : int  0 0 0 0 0 0 12787 229 473 0 ...
+ $ seller_rating       : num  3.79 4.33 4.2 4 4.55 ...
+ $ sp_id               : int  370177 344283 59357 300069 59048 56402 382122 274312 397830 276028 ...
+ $ sp_name             : chr  "Hyundai of Chantilly" "Ingersoll Auto of Pawling" "Rusty Wallace Honda" "Inver Grove Hyundai" ...
+ $ theft_title         : chr  "" "" "" "" ...
+ $ torque              : chr  "175 lb-ft @ 4,000 RPM" "148 lb-ft @ 2,500 RPM" "179 lb-ft @ 2,000 RPM" "132 lb-ft @ 4,500 RPM" ...
+ $ transmission        : chr  "A" "A" "A" "" ...
+ $ transmission_display: chr  "Automatic" "6-Speed Automatic" "Automatic" "" ...
+ $ trimId              : chr  "t93993" "t85498" "t89603" "t87010" ...
+ $ trim_name           : chr  "Limited AWD" "LT Hatchback FWD" "Touring AWD" "SEL AWD" ...
+ $ wheel_system        : chr  "AWD" "FWD" "AWD" "AWD" ...
+ $ wheel_system_display: chr  "All-Wheel Drive" "Front-Wheel Drive" "All-Wheel Drive" "All-Wheel Drive" ...
+ $ wheelbase           : num  105.1 99.4 104.7 102.4 111 ...
+ $ width               : num  72.8 68.3 73 70.9 78.6 ...
+ $ year                : int  2021 2020 2020 2020 2020 2020 2019 2019 2020 2020 ...
+ $ power_hp            : int  181 138 190 147 280 395 450 175 305 NA ...
+ $ power_rpm           : int  6000 4900 5600 6200 6000 5750 2800 5800 6800 NA ...
+ $ torque_lbft         : int  175 148 179 132 262 400 935 174 264 NA ...
+ $ torque_rpm          : int  4000 2500 2000 4500 4700 4500 1800 4000 5300 NA ...
+ $ price_nom           : int  0 0 0 0 0 0 0 0 0 0 ...</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t</span>(<span class="fu">t</span>(<span class="fu">names</span>(cars)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      [,1]                  
+ [1,] "X.1"                 
+ [2,] "X"                   
+ [3,] "vin"                 
+ [4,] "back_legroom"        
+ [5,] "body_type"           
+ [6,] "cabin"               
+ [7,] "city"                
+ [8,] "daysonmarket"        
+ [9,] "dealer_zip"          
+[10,] "engine_cylinders"    
+[11,] "engine_displacement" 
+[12,] "engine_type"         
+[13,] "exterior_color"      
+[14,] "fleet"               
+[15,] "frame_damaged"       
+[16,] "franchise_dealer"    
+[17,] "franchise_make"      
+[18,] "front_legroom"       
+[19,] "fuel_tank_volume"    
+[20,] "fuel_type"           
+[21,] "has_accidents"       
+[22,] "height"              
+[23,] "horsepower"          
+[24,] "interior_color"      
+[25,] "is_cpo"              
+[26,] "is_new"              
+[27,] "is_oemcpo"           
+[28,] "length"              
+[29,] "listed_date"         
+[30,] "listing_color"       
+[31,] "listing_id"          
+[32,] "major_options"       
+[33,] "make_name"           
+[34,] "maximum_seating"     
+[35,] "mileage"             
+[36,] "model_name"          
+[37,] "owner_count"         
+[38,] "power"               
+[39,] "salvage"             
+[40,] "savings_amount"      
+[41,] "seller_rating"       
+[42,] "sp_id"               
+[43,] "sp_name"             
+[44,] "theft_title"         
+[45,] "torque"              
+[46,] "transmission"        
+[47,] "transmission_display"
+[48,] "trimId"              
+[49,] "trim_name"           
+[50,] "wheel_system"        
+[51,] "wheel_system_display"
+[52,] "wheelbase"           
+[53,] "width"               
+[54,] "year"                
+[55,] "power_hp"            
+[56,] "power_rpm"           
+[57,] "torque_lbft"         
+[58,] "torque_rpm"          
+[59,] "price_nom"           </code></pre>
+</div>
+</div>
+<p>We removed unnecessary variables here. We did this because we wanted to choose the quality variables to give us a model that could predict the correct accuracy. So we can have the right business evaluation.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Remove unnecessary variables</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>cars <span class="ot">&lt;-</span> cars[, <span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">14</span><span class="sc">:</span><span class="dv">16</span>,<span class="dv">19</span>,<span class="dv">21</span><span class="sc">:</span><span class="dv">23</span>,<span class="dv">25</span><span class="sc">:</span><span class="dv">28</span>,<span class="dv">34</span>,<span class="dv">37</span>,<span class="dv">39</span>,<span class="dv">44</span>,<span class="dv">59</span>)]</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">t</span>(<span class="fu">t</span>(<span class="fu">names</span>(cars)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      [,1]              
+ [1,] "back_legroom"    
+ [2,] "fleet"           
+ [3,] "frame_damaged"   
+ [4,] "franchise_dealer"
+ [5,] "fuel_tank_volume"
+ [6,] "has_accidents"   
+ [7,] "height"          
+ [8,] "horsepower"      
+ [9,] "is_cpo"          
+[10,] "is_new"          
+[11,] "is_oemcpo"       
+[12,] "length"          
+[13,] "maximum_seating" 
+[14,] "owner_count"     
+[15,] "salvage"         
+[16,] "theft_title"     
+[17,] "price_nom"       </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(cars)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   29233 obs. of  17 variables:
+ $ back_legroom    : num  38.2 34.6 40.4 34.6 39.6 43.6 43.6 38.1 39.8 NA ...
+ $ fleet           : chr  "" "" "" "" ...
+ $ frame_damaged   : chr  "" "" "" "" ...
+ $ franchise_dealer: chr  "True" "True" "True" "True" ...
+ $ fuel_tank_volume: num  16.4 12.2 14 13.2 19.5 26 34 18.5 18.5 NA ...
+ $ has_accidents   : chr  "" "" "" "" ...
+ $ height          : num  65 59.7 66.5 61.6 72.2 77.2 81.5 66.1 58.9 NA ...
+ $ horsepower      : int  181 138 190 147 280 375 450 175 305 NA ...
+ $ is_cpo          : chr  "False" "False" "False" "False" ...
+ $ is_new          : chr  "True" "True" "True" "True" ...
+ $ is_oemcpo       : chr  "False" "False" "False" "False" ...
+ $ length          : num  176 160 182 164 190 ...
+ $ maximum_seating : int  5 5 5 5 5 6 6 5 5 NA ...
+ $ owner_count     : int  0 0 0 0 0 0 1 1 1 0 ...
+ $ salvage         : chr  "" "" "" "" ...
+ $ theft_title     : chr  "" "" "" "" ...
+ $ price_nom       : int  0 0 0 0 0 0 0 0 0 0 ...</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">#reorder the data frame</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>cars <span class="ot">&lt;-</span> cars[, <span class="fu">c</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>,<span class="dv">6</span>,<span class="dv">9</span><span class="sc">:</span><span class="dv">11</span>,<span class="dv">15</span><span class="sc">:</span><span class="dv">16</span>,<span class="dv">1</span>,<span class="dv">5</span>,<span class="dv">7</span><span class="sc">:</span><span class="dv">8</span>,<span class="dv">12</span><span class="sc">:</span><span class="dv">14</span>,<span class="dv">17</span>)] </span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(cars)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   29233 obs. of  17 variables:
+ $ fleet           : chr  "" "" "" "" ...
+ $ frame_damaged   : chr  "" "" "" "" ...
+ $ franchise_dealer: chr  "True" "True" "True" "True" ...
+ $ has_accidents   : chr  "" "" "" "" ...
+ $ is_cpo          : chr  "False" "False" "False" "False" ...
+ $ is_new          : chr  "True" "True" "True" "True" ...
+ $ is_oemcpo       : chr  "False" "False" "False" "False" ...
+ $ salvage         : chr  "" "" "" "" ...
+ $ theft_title     : chr  "" "" "" "" ...
+ $ back_legroom    : num  38.2 34.6 40.4 34.6 39.6 43.6 43.6 38.1 39.8 NA ...
+ $ fuel_tank_volume: num  16.4 12.2 14 13.2 19.5 26 34 18.5 18.5 NA ...
+ $ height          : num  65 59.7 66.5 61.6 72.2 77.2 81.5 66.1 58.9 NA ...
+ $ horsepower      : int  181 138 190 147 280 375 450 175 305 NA ...
+ $ length          : num  176 160 182 164 190 ...
+ $ maximum_seating : int  5 5 5 5 5 6 6 5 5 NA ...
+ $ owner_count     : int  0 0 0 0 0 0 1 1 1 0 ...
+ $ price_nom       : int  0 0 0 0 0 0 0 0 0 0 ...</code></pre>
+</div>
+</div>
+</section>
+<section id="data-for-knn-model" class="level2">
+<h2 class="anchored" data-anchor-id="data-for-knn-model">2. Data for kNN model</h2>
+<p>Next we get the data ready for kNN model. We will need to drop all the NAs variables inside the data frame.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>cars_kNN <span class="ot">&lt;-</span> <span class="fu">drop_na</span>(cars) </span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co"># this code drop all the NA variable inside the data frame</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(cars_kNN, <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   fleet frame_damaged franchise_dealer has_accidents is_cpo is_new is_oemcpo
+1                                  True                False   True     False
+2                                  True                False   True     False
+3                                  True                False   True     False
+4                                  True                False   True     False
+5                                  True                False   True     False
+6  False         False             True         False  False   True     False
+7   True         False            False         False  False  False     False
+8   True         False             True         False   True  False     False
+9   True         False             True         False  False  False     False
+10                                 True                False   True     False
+   salvage theft_title back_legroom fuel_tank_volume height horsepower length
+1                              38.2             16.4   65.0        181  176.4
+2                              34.6             12.2   59.7        138  159.8
+3                              40.4             14.0   66.5        190  182.1
+4                              34.6             13.2   61.6        147  164.0
+5                              39.6             19.5   72.2        280  190.5
+6    False       False         43.6             26.0   77.2        375  231.9
+7    False       False         43.6             34.0   81.5        450  250.0
+8    False       False         38.1             18.5   66.1        175  189.9
+9    False       False         39.8             18.5   58.9        305  201.3
+10                             39.9             15.6   65.4        252  183.1
+   maximum_seating owner_count price_nom
+1                5           0         0
+2                5           0         0
+3                5           0         0
+4                5           0         0
+5                5           0         0
+6                6           0         0
+7                6           1         0
+8                5           1         0
+9                5           1         0
+10               5           0         0</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(cars_kNN)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   26732 obs. of  17 variables:
+ $ fleet           : chr  "" "" "" "" ...
+ $ frame_damaged   : chr  "" "" "" "" ...
+ $ franchise_dealer: chr  "True" "True" "True" "True" ...
+ $ has_accidents   : chr  "" "" "" "" ...
+ $ is_cpo          : chr  "False" "False" "False" "False" ...
+ $ is_new          : chr  "True" "True" "True" "True" ...
+ $ is_oemcpo       : chr  "False" "False" "False" "False" ...
+ $ salvage         : chr  "" "" "" "" ...
+ $ theft_title     : chr  "" "" "" "" ...
+ $ back_legroom    : num  38.2 34.6 40.4 34.6 39.6 43.6 43.6 38.1 39.8 39.9 ...
+ $ fuel_tank_volume: num  16.4 12.2 14 13.2 19.5 26 34 18.5 18.5 15.6 ...
+ $ height          : num  65 59.7 66.5 61.6 72.2 77.2 81.5 66.1 58.9 65.4 ...
+ $ horsepower      : int  181 138 190 147 280 375 450 175 305 252 ...
+ $ length          : num  176 160 182 164 190 ...
+ $ maximum_seating : int  5 5 5 5 5 6 6 5 5 5 ...
+ $ owner_count     : int  0 0 0 0 0 0 1 1 1 0 ...
+ $ price_nom       : int  0 0 0 0 0 0 0 0 0 0 ...</code></pre>
+</div>
+</div>
+<p>Here we set our categorical variables as factors because these columns have 2 or more classes.</p>
+<p><strong>Cars_kNN</strong> will be our data frame for the test of the cars.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set categorical variables as factor because columns have more than 2 classes</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>cars_kNN<span class="sc">$</span>fleet <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(cars_kNN<span class="sc">$</span>fleet)</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>cars_kNN<span class="sc">$</span>frame_damaged <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(cars_kNN<span class="sc">$</span>frame_damaged)</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>cars_kNN<span class="sc">$</span>franchise_dealer <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(cars_kNN<span class="sc">$</span>franchise_dealer)</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>cars_kNN<span class="sc">$</span>has_accidents <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(cars_kNN<span class="sc">$</span>has_accidents)</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>cars_kNN<span class="sc">$</span>is_cpo <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(cars_kNN<span class="sc">$</span>is_cpo)</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>cars_kNN<span class="sc">$</span>is_new <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(cars_kNN<span class="sc">$</span>is_new)</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>cars_kNN<span class="sc">$</span>is_oemcpo <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(cars_kNN<span class="sc">$</span>is_oemcpo)</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>cars_kNN<span class="sc">$</span>salvage <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(cars_kNN<span class="sc">$</span>salvage)</span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>cars_kNN<span class="sc">$</span>theft_title <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(cars_kNN<span class="sc">$</span>theft_title)</span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(cars_kNN)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   26732 obs. of  17 variables:
+ $ fleet           : Factor w/ 3 levels "","False","True": 1 1 1 1 1 2 3 3 3 1 ...
+ $ frame_damaged   : Factor w/ 3 levels "","False","True": 1 1 1 1 1 2 2 2 2 1 ...
+ $ franchise_dealer: Factor w/ 2 levels "False","True": 2 2 2 2 2 2 1 2 2 2 ...
+ $ has_accidents   : Factor w/ 3 levels "","False","True": 1 1 1 1 1 2 2 2 2 1 ...
+ $ is_cpo          : Factor w/ 2 levels "False","True": 1 1 1 1 1 1 1 2 1 1 ...
+ $ is_new          : Factor w/ 2 levels "False","True": 2 2 2 2 2 2 1 1 1 2 ...
+ $ is_oemcpo       : Factor w/ 2 levels "False","True": 1 1 1 1 1 1 1 1 1 1 ...
+ $ salvage         : Factor w/ 3 levels "","False","True": 1 1 1 1 1 2 2 2 2 1 ...
+ $ theft_title     : Factor w/ 3 levels "","False","True": 1 1 1 1 1 2 2 2 2 1 ...
+ $ back_legroom    : num  38.2 34.6 40.4 34.6 39.6 43.6 43.6 38.1 39.8 39.9 ...
+ $ fuel_tank_volume: num  16.4 12.2 14 13.2 19.5 26 34 18.5 18.5 15.6 ...
+ $ height          : num  65 59.7 66.5 61.6 72.2 77.2 81.5 66.1 58.9 65.4 ...
+ $ horsepower      : int  181 138 190 147 280 375 450 175 305 252 ...
+ $ length          : num  176 160 182 164 190 ...
+ $ maximum_seating : int  5 5 5 5 5 6 6 5 5 5 ...
+ $ owner_count     : int  0 0 0 0 0 0 1 1 1 0 ...
+ $ price_nom       : int  0 0 0 0 0 0 0 0 0 0 ...</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>cars_kNN<span class="sc">$</span>price_nom <span class="ot">&lt;-</span> <span class="fu">factor</span>(cars_kNN<span class="sc">$</span>price_nom,</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>                             <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">'0'</span>, <span class="st">'1'</span>),</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>                             <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">'low'</span>, <span class="st">'high'</span>))</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(cars_kNN)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  fleet frame_damaged franchise_dealer has_accidents is_cpo is_new is_oemcpo
+1                                 True                False   True     False
+2                                 True                False   True     False
+3                                 True                False   True     False
+4                                 True                False   True     False
+5                                 True                False   True     False
+6 False         False             True         False  False   True     False
+  salvage theft_title back_legroom fuel_tank_volume height horsepower length
+1                             38.2             16.4   65.0        181  176.4
+2                             34.6             12.2   59.7        138  159.8
+3                             40.4             14.0   66.5        190  182.1
+4                             34.6             13.2   61.6        147  164.0
+5                             39.6             19.5   72.2        280  190.5
+6   False       False         43.6             26.0   77.2        375  231.9
+  maximum_seating owner_count price_nom
+1               5           0       low
+2               5           0       low
+3               5           0       low
+4               5           0       low
+5               5           0       low
+6               6           0       low</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(cars_kNN<span class="sc">$</span>price_nom)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  low  high 
+23612  3120 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(cars_kNN)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   26732 obs. of  17 variables:
+ $ fleet           : Factor w/ 3 levels "","False","True": 1 1 1 1 1 2 3 3 3 1 ...
+ $ frame_damaged   : Factor w/ 3 levels "","False","True": 1 1 1 1 1 2 2 2 2 1 ...
+ $ franchise_dealer: Factor w/ 2 levels "False","True": 2 2 2 2 2 2 1 2 2 2 ...
+ $ has_accidents   : Factor w/ 3 levels "","False","True": 1 1 1 1 1 2 2 2 2 1 ...
+ $ is_cpo          : Factor w/ 2 levels "False","True": 1 1 1 1 1 1 1 2 1 1 ...
+ $ is_new          : Factor w/ 2 levels "False","True": 2 2 2 2 2 2 1 1 1 2 ...
+ $ is_oemcpo       : Factor w/ 2 levels "False","True": 1 1 1 1 1 1 1 1 1 1 ...
+ $ salvage         : Factor w/ 3 levels "","False","True": 1 1 1 1 1 2 2 2 2 1 ...
+ $ theft_title     : Factor w/ 3 levels "","False","True": 1 1 1 1 1 2 2 2 2 1 ...
+ $ back_legroom    : num  38.2 34.6 40.4 34.6 39.6 43.6 43.6 38.1 39.8 39.9 ...
+ $ fuel_tank_volume: num  16.4 12.2 14 13.2 19.5 26 34 18.5 18.5 15.6 ...
+ $ height          : num  65 59.7 66.5 61.6 72.2 77.2 81.5 66.1 58.9 65.4 ...
+ $ horsepower      : int  181 138 190 147 280 375 450 175 305 252 ...
+ $ length          : num  176 160 182 164 190 ...
+ $ maximum_seating : int  5 5 5 5 5 6 6 5 5 5 ...
+ $ owner_count     : int  0 0 0 0 0 0 1 1 1 0 ...
+ $ price_nom       : Factor w/ 2 levels "low","high": 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
+</div>
+</div>
+</section>
+<section id="car-test-data" class="level2">
+<h2 class="anchored" data-anchor-id="car-test-data">3. Car Test data</h2>
+<p>Now we need to get our car test data uploaded and ready to compare.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>car_test <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"car_test_12.csv"</span>, <span class="at">header =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(car_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "X"                    "vin"                  "back_legroom"        
+ [4] "body_type"            "cabin"                "city"                
+ [7] "daysonmarket"         "dealer_zip"           "engine_cylinders"    
+[10] "engine_displacement"  "engine_type"          "exterior_color"      
+[13] "fleet"                "frame_damaged"        "franchise_dealer"    
+[16] "franchise_make"       "front_legroom"        "fuel_tank_volume"    
+[19] "fuel_type"            "has_accidents"        "height"              
+[22] "horsepower"           "interior_color"       "is_cpo"              
+[25] "is_new"               "is_oemcpo"            "length"              
+[28] "listed_date"          "listing_color"        "listing_id"          
+[31] "major_options"        "make_name"            "maximum_seating"     
+[34] "mileage"              "model_name"           "owner_count"         
+[37] "power"                "salvage"              "savings_amount"      
+[40] "seller_rating"        "sp_id"                "sp_name"             
+[43] "theft_title"          "torque"               "transmission"        
+[46] "transmission_display" "trimId"               "trim_name"           
+[49] "wheel_system"         "wheel_system_display" "wheelbase"           
+[52] "width"                "year"                 "power_hp"            
+[55] "power_rpm"            "torque_lbft"          "torque_rpm"          </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>car_test <span class="ot">&lt;-</span> car_test[, <span class="fu">c</span>(<span class="dv">13</span><span class="sc">:</span><span class="dv">15</span>,<span class="dv">20</span>,<span class="dv">24</span><span class="sc">:</span><span class="dv">26</span>,<span class="dv">38</span>,<span class="dv">43</span>,<span class="dv">3</span>,<span class="dv">18</span>,<span class="dv">21</span>,<span class="dv">22</span>,<span class="dv">27</span>,<span class="dv">33</span>,<span class="dv">36</span>)]</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(car_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "fleet"            "frame_damaged"    "franchise_dealer" "has_accidents"   
+ [5] "is_cpo"           "is_new"           "is_oemcpo"        "salvage"         
+ [9] "theft_title"      "back_legroom"     "fuel_tank_volume" "height"          
+[13] "horsepower"       "length"           "maximum_seating"  "owner_count"     </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(car_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   6 obs. of  16 variables:
+ $ fleet           : chr  "" "False" "" "False" ...
+ $ frame_damaged   : chr  "" "False" "" "False" ...
+ $ franchise_dealer: chr  "True" "False" "True" "True" ...
+ $ has_accidents   : chr  "" "True" "" "False" ...
+ $ is_cpo          : chr  "False" "False" "False" "False" ...
+ $ is_new          : chr  "True" "False" "True" "False" ...
+ $ is_oemcpo       : chr  "False" "False" "False" "False" ...
+ $ salvage         : chr  "" "False" "" "False" ...
+ $ theft_title     : chr  "" "False" "" "False" ...
+ $ back_legroom    : num  43.4 36.8 43.6 38 38.3 38.4
+ $ fuel_tank_volume: num  24 18.5 26 15.8 18.5 24.6
+ $ height          : num  75.5 57.6 77.2 57.5 57.9 70.7
+ $ horsepower      : int  355 197 375 310 158 302
+ $ length          : num  232 192 232 198 189 ...
+ $ maximum_seating : int  5 5 6 5 5 5
+ $ owner_count     : int  0 2 0 1 1 1</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="ii.-knn-model" class="level1">
+<h1>II. kNN model</h1>
+<section id="car-test-data-frame" class="level2">
+<h2 class="anchored" data-anchor-id="car-test-data-frame">1. Car Test data frame</h2>
+<section id="prepare-the-car-test-data-for-knn" class="level3">
+<h3 class="anchored" data-anchor-id="prepare-the-car-test-data-for-knn">1.1 Prepare the Car Test data for kNN</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># we will normalize the data frame for the test of the cars for the kNN model</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>car_test_kNN <span class="ot">&lt;-</span> car_test</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>car_test_kNN<span class="sc">$</span>fleet <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(car_test_kNN<span class="sc">$</span>fleet)</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>car_test_kNN<span class="sc">$</span>frame_damaged <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(car_test_kNN<span class="sc">$</span>frame_damaged)</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>car_test_kNN<span class="sc">$</span>franchise_dealer <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(car_test_kNN<span class="sc">$</span>franchise_dealer)</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>car_test_kNN<span class="sc">$</span>has_accidents <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(car_test_kNN<span class="sc">$</span>has_accidents)</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>car_test_kNN<span class="sc">$</span>is_cpo <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(car_test_kNN<span class="sc">$</span>is_cpo)</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>car_test_kNN<span class="sc">$</span>is_new <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(car_test_kNN<span class="sc">$</span>is_new)</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>car_test_kNN<span class="sc">$</span>is_oemcpo <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(car_test_kNN<span class="sc">$</span>is_oemcpo)</span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>car_test_kNN<span class="sc">$</span>salvage <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(car_test_kNN<span class="sc">$</span>salvage)</span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>car_test_kNN<span class="sc">$</span>theft_title <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(car_test_kNN<span class="sc">$</span>theft_title)</span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(car_test_kNN)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   6 obs. of  16 variables:
+ $ fleet           : Factor w/ 2 levels "","False": 1 2 1 2 2 2
+ $ frame_damaged   : Factor w/ 2 levels "","False": 1 2 1 2 2 2
+ $ franchise_dealer: Factor w/ 2 levels "False","True": 2 1 2 2 2 2
+ $ has_accidents   : Factor w/ 3 levels "","False","True": 1 3 1 2 2 2
+ $ is_cpo          : Factor w/ 1 level "False": 1 1 1 1 1 1
+ $ is_new          : Factor w/ 2 levels "False","True": 2 1 2 1 1 1
+ $ is_oemcpo       : Factor w/ 1 level "False": 1 1 1 1 1 1
+ $ salvage         : Factor w/ 2 levels "","False": 1 2 1 2 2 2
+ $ theft_title     : Factor w/ 2 levels "","False": 1 2 1 2 2 2
+ $ back_legroom    : num  43.4 36.8 43.6 38 38.3 38.4
+ $ fuel_tank_volume: num  24 18.5 26 15.8 18.5 24.6
+ $ height          : num  75.5 57.6 77.2 57.5 57.9 70.7
+ $ horsepower      : int  355 197 375 310 158 302
+ $ length          : num  232 192 232 198 189 ...
+ $ maximum_seating : int  5 5 6 5 5 5
+ $ owner_count     : int  0 2 0 1 1 1</code></pre>
+</div>
+</div>
+</section>
+<section id="levels-of-training-data-and-new-data" class="level3">
+<h3 class="anchored" data-anchor-id="levels-of-training-data-and-new-data">1.2 Levels of training data and new data</h3>
+<section id="a.-before-the-adding-the-levels-to-the-new-data" class="level4">
+<h4 class="anchored" data-anchor-id="a.-before-the-adding-the-levels-to-the-new-data">A. Before the adding the levels to the new data</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(car_test_kNN)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   6 obs. of  16 variables:
+ $ fleet           : Factor w/ 2 levels "","False": 1 2 1 2 2 2
+ $ frame_damaged   : Factor w/ 2 levels "","False": 1 2 1 2 2 2
+ $ franchise_dealer: Factor w/ 2 levels "False","True": 2 1 2 2 2 2
+ $ has_accidents   : Factor w/ 3 levels "","False","True": 1 3 1 2 2 2
+ $ is_cpo          : Factor w/ 1 level "False": 1 1 1 1 1 1
+ $ is_new          : Factor w/ 2 levels "False","True": 2 1 2 1 1 1
+ $ is_oemcpo       : Factor w/ 1 level "False": 1 1 1 1 1 1
+ $ salvage         : Factor w/ 2 levels "","False": 1 2 1 2 2 2
+ $ theft_title     : Factor w/ 2 levels "","False": 1 2 1 2 2 2
+ $ back_legroom    : num  43.4 36.8 43.6 38 38.3 38.4
+ $ fuel_tank_volume: num  24 18.5 26 15.8 18.5 24.6
+ $ height          : num  75.5 57.6 77.2 57.5 57.9 70.7
+ $ horsepower      : int  355 197 375 310 158 302
+ $ length          : num  232 192 232 198 189 ...
+ $ maximum_seating : int  5 5 6 5 5 5
+ $ owner_count     : int  0 2 0 1 1 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co"># levels of each variables inside the new data</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(cars_kNN) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   26732 obs. of  17 variables:
+ $ fleet           : Factor w/ 3 levels "","False","True": 1 1 1 1 1 2 3 3 3 1 ...
+ $ frame_damaged   : Factor w/ 3 levels "","False","True": 1 1 1 1 1 2 2 2 2 1 ...
+ $ franchise_dealer: Factor w/ 2 levels "False","True": 2 2 2 2 2 2 1 2 2 2 ...
+ $ has_accidents   : Factor w/ 3 levels "","False","True": 1 1 1 1 1 2 2 2 2 1 ...
+ $ is_cpo          : Factor w/ 2 levels "False","True": 1 1 1 1 1 1 1 2 1 1 ...
+ $ is_new          : Factor w/ 2 levels "False","True": 2 2 2 2 2 2 1 1 1 2 ...
+ $ is_oemcpo       : Factor w/ 2 levels "False","True": 1 1 1 1 1 1 1 1 1 1 ...
+ $ salvage         : Factor w/ 3 levels "","False","True": 1 1 1 1 1 2 2 2 2 1 ...
+ $ theft_title     : Factor w/ 3 levels "","False","True": 1 1 1 1 1 2 2 2 2 1 ...
+ $ back_legroom    : num  38.2 34.6 40.4 34.6 39.6 43.6 43.6 38.1 39.8 39.9 ...
+ $ fuel_tank_volume: num  16.4 12.2 14 13.2 19.5 26 34 18.5 18.5 15.6 ...
+ $ height          : num  65 59.7 66.5 61.6 72.2 77.2 81.5 66.1 58.9 65.4 ...
+ $ horsepower      : int  181 138 190 147 280 375 450 175 305 252 ...
+ $ length          : num  176 160 182 164 190 ...
+ $ maximum_seating : int  5 5 5 5 5 6 6 5 5 5 ...
+ $ owner_count     : int  0 0 0 0 0 0 1 1 1 0 ...
+ $ price_nom       : Factor w/ 2 levels "low","high": 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># levels of each variables inside the training data</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(car_test_kNN<span class="sc">$</span>fleet)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] ""      "False"</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(car_test_kNN<span class="sc">$</span>frame_damaged)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] ""      "False"</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(car_test_kNN<span class="sc">$</span>is_cpo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "False"</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(car_test_kNN<span class="sc">$</span>is_oemcpo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "False"</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(car_test_kNN<span class="sc">$</span>salvage)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] ""      "False"</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(car_test_kNN<span class="sc">$</span>theft_title)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] ""      "False"</code></pre>
+</div>
+</div>
+</section>
+<section id="b.-after-the-adding-the-levels-to-the-new-data" class="level4">
+<h4 class="anchored" data-anchor-id="b.-after-the-adding-the-levels-to-the-new-data">B. After the adding the levels to the new data</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(car_test_kNN<span class="sc">$</span>fleet) <span class="ot">&lt;-</span> <span class="fu">levels</span>(cars_kNN<span class="sc">$</span>fleet)</span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(car_test_kNN<span class="sc">$</span>frame_damaged) <span class="ot">&lt;-</span> <span class="fu">levels</span>(cars_kNN<span class="sc">$</span>frame_damaged)</span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(car_test_kNN<span class="sc">$</span>is_cpo) <span class="ot">&lt;-</span> <span class="fu">levels</span>(cars_kNN<span class="sc">$</span>is_cpo)</span>
+<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(car_test_kNN<span class="sc">$</span>is_oemcpo) <span class="ot">&lt;-</span> <span class="fu">levels</span>(cars_kNN<span class="sc">$</span>is_oemcpo)</span>
+<span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(car_test_kNN<span class="sc">$</span>salvage) <span class="ot">&lt;-</span> <span class="fu">levels</span>(cars_kNN<span class="sc">$</span>salvage)</span>
+<span id="cb64-6"><a href="#cb64-6" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(car_test_kNN<span class="sc">$</span>theft_title) <span class="ot">&lt;-</span> <span class="fu">levels</span>(cars_kNN<span class="sc">$</span>theft_title)</span>
+<span id="cb64-7"><a href="#cb64-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-8"><a href="#cb64-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(car_test_kNN)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  fleet frame_damaged franchise_dealer has_accidents is_cpo is_new is_oemcpo
+1                                 True                False   True     False
+2 False         False            False          True  False  False     False
+3                                 True                False   True     False
+4 False         False             True         False  False  False     False
+5 False         False             True         False  False  False     False
+6 False         False             True         False  False  False     False
+  salvage theft_title back_legroom fuel_tank_volume height horsepower length
+1                             43.4             24.0   75.5        355  231.7
+2   False       False         36.8             18.5   57.6        197  191.5
+3                             43.6             26.0   77.2        375  231.9
+4   False       False         38.0             15.8   57.5        310  197.5
+5   False       False         38.3             18.5   57.9        158  189.2
+6   False       False         38.4             24.6   70.7        302  189.7
+  maximum_seating owner_count
+1               5           0
+2               5           2
+3               6           0
+4               5           1
+5               5           1
+6               5           1</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(cars_kNN)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   26732 obs. of  17 variables:
+ $ fleet           : Factor w/ 3 levels "","False","True": 1 1 1 1 1 2 3 3 3 1 ...
+ $ frame_damaged   : Factor w/ 3 levels "","False","True": 1 1 1 1 1 2 2 2 2 1 ...
+ $ franchise_dealer: Factor w/ 2 levels "False","True": 2 2 2 2 2 2 1 2 2 2 ...
+ $ has_accidents   : Factor w/ 3 levels "","False","True": 1 1 1 1 1 2 2 2 2 1 ...
+ $ is_cpo          : Factor w/ 2 levels "False","True": 1 1 1 1 1 1 1 2 1 1 ...
+ $ is_new          : Factor w/ 2 levels "False","True": 2 2 2 2 2 2 1 1 1 2 ...
+ $ is_oemcpo       : Factor w/ 2 levels "False","True": 1 1 1 1 1 1 1 1 1 1 ...
+ $ salvage         : Factor w/ 3 levels "","False","True": 1 1 1 1 1 2 2 2 2 1 ...
+ $ theft_title     : Factor w/ 3 levels "","False","True": 1 1 1 1 1 2 2 2 2 1 ...
+ $ back_legroom    : num  38.2 34.6 40.4 34.6 39.6 43.6 43.6 38.1 39.8 39.9 ...
+ $ fuel_tank_volume: num  16.4 12.2 14 13.2 19.5 26 34 18.5 18.5 15.6 ...
+ $ height          : num  65 59.7 66.5 61.6 72.2 77.2 81.5 66.1 58.9 65.4 ...
+ $ horsepower      : int  181 138 190 147 280 375 450 175 305 252 ...
+ $ length          : num  176 160 182 164 190 ...
+ $ maximum_seating : int  5 5 5 5 5 6 6 5 5 5 ...
+ $ owner_count     : int  0 0 0 0 0 0 1 1 1 0 ...
+ $ price_nom       : Factor w/ 2 levels "low","high": 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(car_test_kNN)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   6 obs. of  16 variables:
+ $ fleet           : Factor w/ 3 levels "","False","True": 1 2 1 2 2 2
+ $ frame_damaged   : Factor w/ 3 levels "","False","True": 1 2 1 2 2 2
+ $ franchise_dealer: Factor w/ 2 levels "False","True": 2 1 2 2 2 2
+ $ has_accidents   : Factor w/ 3 levels "","False","True": 1 3 1 2 2 2
+ $ is_cpo          : Factor w/ 2 levels "False","True": 1 1 1 1 1 1
+ $ is_new          : Factor w/ 2 levels "False","True": 2 1 2 1 1 1
+ $ is_oemcpo       : Factor w/ 2 levels "False","True": 1 1 1 1 1 1
+ $ salvage         : Factor w/ 3 levels "","False","True": 1 2 1 2 2 2
+ $ theft_title     : Factor w/ 3 levels "","False","True": 1 2 1 2 2 2
+ $ back_legroom    : num  43.4 36.8 43.6 38 38.3 38.4
+ $ fuel_tank_volume: num  24 18.5 26 15.8 18.5 24.6
+ $ height          : num  75.5 57.6 77.2 57.5 57.9 70.7
+ $ horsepower      : int  355 197 375 310 158 302
+ $ length          : num  232 192 232 198 189 ...
+ $ maximum_seating : int  5 5 6 5 5 5
+ $ owner_count     : int  0 2 0 1 1 1</code></pre>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="prepare-for-the-knn" class="level2">
+<h2 class="anchored" data-anchor-id="prepare-for-the-knn">2. Prepare for the kNN</h2>
+<p>Here we set our training and validation sets for the KNN Model:</p>
+<p><strong>training_index_kNN</strong> will be the training index for the kNN Model.</p>
+<p><strong>valid_index_kNN</strong> will be the validation index for the kNN Model.</p>
+<p><strong>train_kNN</strong> will be the data frame for the training data for the kNN model after splitting.</p>
+<p><strong>valid_kNN</strong> will be data frame for the validation data for the kNN model after splitting</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set training and validation sets for kNN model</span></span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">666</span>)</span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a>train_index_kNN <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(cars_kNN), <span class="fl">0.6</span> <span class="sc">*</span> <span class="fu">nrow</span>(cars_kNN))</span>
+<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a>valid_index_kNN <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(cars_kNN), train_index_kNN)</span>
+<span id="cb70-6"><a href="#cb70-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-7"><a href="#cb70-7" aria-hidden="true" tabindex="-1"></a>train_kNN <span class="ot">&lt;-</span> cars_kNN[train_index_kNN,]</span>
+<span id="cb70-8"><a href="#cb70-8" aria-hidden="true" tabindex="-1"></a>valid_kNN <span class="ot">&lt;-</span> cars_kNN[valid_index_kNN,]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(train_kNN)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 16039</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(valid_kNN)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 10693</code></pre>
+</div>
+</div>
+<p><strong>train_norm_kNN</strong> will be the data frame for the normalization of the training data of the kNN model.</p>
+<p><strong>valid_norm_kNN</strong> will be the data frame for the validation of the validation data of the kNN model</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>train_norm_kNN <span class="ot">&lt;-</span> train_kNN</span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a>valid_norm_kNN <span class="ot">&lt;-</span> valid_kNN</span>
+<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb75-4"><a href="#cb75-4" aria-hidden="true" tabindex="-1"></a><span class="fu">t</span>(<span class="fu">t</span>(<span class="fu">names</span>(cars_kNN)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      [,1]              
+ [1,] "fleet"           
+ [2,] "frame_damaged"   
+ [3,] "franchise_dealer"
+ [4,] "has_accidents"   
+ [5,] "is_cpo"          
+ [6,] "is_new"          
+ [7,] "is_oemcpo"       
+ [8,] "salvage"         
+ [9,] "theft_title"     
+[10,] "back_legroom"    
+[11,] "fuel_tank_volume"
+[12,] "height"          
+[13,] "horsepower"      
+[14,] "length"          
+[15,] "maximum_seating" 
+[16,] "owner_count"     
+[17,] "price_nom"       </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(train_kNN)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   16039 obs. of  17 variables:
+ $ fleet           : Factor w/ 3 levels "","False","True": 3 1 2 2 2 1 1 2 1 3 ...
+ $ frame_damaged   : Factor w/ 3 levels "","False","True": 2 1 2 2 2 1 1 2 1 2 ...
+ $ franchise_dealer: Factor w/ 2 levels "False","True": 2 2 1 1 2 2 2 2 2 2 ...
+ $ has_accidents   : Factor w/ 3 levels "","False","True": 2 1 3 3 2 1 1 2 1 3 ...
+ $ is_cpo          : Factor w/ 2 levels "False","True": 1 1 1 1 2 1 1 1 1 1 ...
+ $ is_new          : Factor w/ 2 levels "False","True": 1 2 1 1 1 2 2 1 2 1 ...
+ $ is_oemcpo       : Factor w/ 2 levels "False","True": 1 1 1 1 2 1 1 1 1 1 ...
+ $ salvage         : Factor w/ 3 levels "","False","True": 2 1 2 2 2 1 1 2 1 2 ...
+ $ theft_title     : Factor w/ 3 levels "","False","True": 2 1 2 2 2 1 1 2 1 2 ...
+ $ back_legroom    : num  40 38.2 38.4 35.9 38.9 38.5 37.8 36 38.3 40 ...
+ $ fuel_tank_volume: num  19 16.4 26 18.5 17 26 18.5 12.4 21.5 25.1 ...
+ $ height          : num  59.4 65.2 75.8 57.1 57.9 77.2 65.3 56.5 73.6 71.5 ...
+ $ horsepower      : int  304 181 240 272 178 400 248 174 270 215 ...
+ $ length          : num  201 176 204 191 191 ...
+ $ maximum_seating : int  5 5 8 5 5 5 5 5 5 5 ...
+ $ owner_count     : int  1 0 4 2 1 0 0 1 0 4 ...
+ $ price_nom       : Factor w/ 2 levels "low","high": 1 1 1 1 1 1 2 1 1 1 ...</code></pre>
+</div>
+</div>
+<p>Here we will prepare the data for analysis by creating pre-process model. We also normalized the selected columns in the train_norm data set based on the transformations learned from the norm values model.</p>
+<p><strong>norm_values_kNN</strong> will be the data frame that will prepare for the analysis for the kNN model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="co"># preProcess: Prepare the data for the analysis / create preprocessing model</span></span>
+<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a>norm_values_kNN <span class="ot">&lt;-</span> <span class="fu">preProcess</span>(train_kNN[, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>,<span class="dv">17</span>)],</span>
+<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a>                          <span class="at">method =</span> <span class="fu">c</span>(<span class="st">"center"</span>,</span>
+<span id="cb79-4"><a href="#cb79-4" aria-hidden="true" tabindex="-1"></a>                                     <span class="st">"scale"</span>))</span>
+<span id="cb79-5"><a href="#cb79-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-6"><a href="#cb79-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalize the selected columns in the train_norm dataset based on the transformations learned from "norm_values model"</span></span>
+<span id="cb79-7"><a href="#cb79-7" aria-hidden="true" tabindex="-1"></a><span class="co"># predict(model, dataset)</span></span>
+<span id="cb79-8"><a href="#cb79-8" aria-hidden="true" tabindex="-1"></a>train_norm_kNN[, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>, <span class="dv">17</span>)] <span class="ot">&lt;-</span> <span class="fu">predict</span>(norm_values_kNN,</span>
+<span id="cb79-9"><a href="#cb79-9" aria-hidden="true" tabindex="-1"></a>                                      train_kNN[, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>, <span class="dv">17</span>)])</span>
+<span id="cb79-10"><a href="#cb79-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-11"><a href="#cb79-11" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(train_norm_kNN)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      fleet frame_damaged franchise_dealer has_accidents is_cpo is_new
+17982  True         False             True         False  False  False
+12926                                 True                False   True
+13195 False         False            False          True  False  False
+23675 False         False            False          True  False  False
+15900 False         False             True         False   True  False
+873                                   True                False   True
+      is_oemcpo salvage theft_title back_legroom fuel_tank_volume      height
+17982     False   False       False   0.64311937       0.11767538 -0.89323874
+12926     False                       0.07772847      -0.38966276 -0.06143842
+13195     False   False       False   0.14054968       1.48358578  1.45874836
+23675     False   False       False  -0.64471546       0.02011035 -1.22309059
+15900      True   False       False   0.29760271      -0.27258473 -1.10835951
+873       False                       0.17196029       1.48358578  1.65952775
+       horsepower      length maximum_seating owner_count price_nom
+17982  0.68578482  0.40667868       -0.497447   0.2389365       low
+12926 -0.72440277 -0.85592908       -0.497447  -0.7802928       low
+13195 -0.04797133  0.56128371        2.232441   3.2966242       low
+23675  0.31890675 -0.09836443       -0.497447   1.2581657       low
+15900 -0.75879759 -0.10867143       -0.497447   0.2389365       low
+873    1.78641904  1.88057997       -0.497447  -0.7802928       low</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>valid_norm_kNN[, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>, <span class="dv">17</span>)] <span class="ot">&lt;-</span> <span class="fu">predict</span>(norm_values_kNN,</span>
+<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a>                                valid_kNN[, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>, <span class="dv">17</span>)])</span>
+<span id="cb81-3"><a href="#cb81-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb81-4"><a href="#cb81-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(valid_norm_kNN)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   fleet frame_damaged franchise_dealer has_accidents is_cpo is_new is_oemcpo
+2                                  True                False   True     False
+3                                  True                False   True     False
+6  False         False             True         False  False   True     False
+9   True         False             True         False  False  False     False
+10                                 True                False   True     False
+11                                 True                False   True     False
+   salvage theft_title back_legroom fuel_tank_volume      height  horsepower
+2                        -1.0530533      -1.20920900 -0.85021459 -1.21739518
+3                         0.7687618      -0.85797490  0.12499958 -0.62121832
+6    False       False    1.7739012       1.48358578  1.65952775  1.49979554
+9    False       False    0.5802982       0.02011035 -0.96494566  0.69724976
+10                        0.6117088      -0.54576681 -0.03275565  0.08960795
+11                       -0.8960003      -1.11164397  0.12499958 -0.77026253
+       length maximum_seating owner_count price_nom
+2  -1.7114103      -0.4974470  -0.7802928       low
+3  -0.5621795      -0.4974470  -0.7802928       low
+6   2.0042640       0.4125156  -0.7802928       low
+9   0.4272927      -0.4974470   0.2389365       low
+10 -0.5106445      -0.4974470  -0.7802928       low
+11 -1.3609722      -0.4974470  -0.7802928       low</code></pre>
+</div>
+</div>
+<p>Next we need to normalize car test data.</p>
+<p><strong>car_test_norm_kNN</strong> will be the data frame of the car test data frame that will be normalized for the kNN model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalize Car Test data for kNN</span></span>
+<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a>car_test_norm_kNN <span class="ot">&lt;-</span> <span class="fu">predict</span>(norm_values_kNN, car_test_kNN)</span>
+<span id="cb83-3"><a href="#cb83-3" aria-hidden="true" tabindex="-1"></a>car_test_norm_kNN</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  fleet frame_damaged franchise_dealer has_accidents is_cpo is_new is_oemcpo
+1                                 True                False   True     False
+2 False         False            False          True  False  False     False
+3                                 True                False   True     False
+4 False         False             True         False  False  False     False
+5 False         False             True         False  False  False     False
+6 False         False             True         False  False  False     False
+  salvage theft_title back_legroom fuel_tank_volume     height horsepower
+1                       1.71107996       1.09332566  1.4157242  1.2704967
+2   False       False  -0.36202001       0.02011035 -1.1513837 -0.5409637
+3                       1.77390117       1.48358578  1.6595277  1.4997955
+4   False       False   0.01490726      -0.50674080 -1.1657251  0.7545745
+5   False       False   0.10913908       0.02011035 -1.1083595 -0.9880964
+6   False       False   0.14054968       1.21040370  0.7273377  0.6628549
+       length maximum_seating owner_count
+1  1.99395700      -0.4974470  -0.7802928
+2 -0.07775042      -0.4974470   1.2581657
+3  2.00426400       0.4125156  -0.7802928
+4  0.23145964      -0.4974470   0.2389365
+5 -0.19628095      -0.4974470   0.2389365
+6 -0.17051344      -0.4974470   0.2389365</code></pre>
+</div>
+</div>
+</section>
+<section id="knn-model" class="level2">
+<h2 class="anchored" data-anchor-id="knn-model">3. kNN model</h2>
+<section id="k-3" class="level3">
+<h3 class="anchored" data-anchor-id="k-3">3.1 k = 3</h3>
+<section id="a.-the-training" class="level4">
+<h4 class="anchored" data-anchor-id="a.-the-training">A. The Training</h4>
+<p><strong>kNN_model_k3</strong> is the kNN model for k = 3.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>knn_model_k3 <span class="ot">&lt;-</span> caret<span class="sc">::</span><span class="fu">knn3</span>(price_nom <span class="sc">~</span>.,</span>
+<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">data =</span> train_norm_kNN, <span class="at">k =</span> <span class="dv">3</span>)</span>
+<span id="cb85-3"><a href="#cb85-3" aria-hidden="true" tabindex="-1"></a>knn_model_k3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>3-nearest neighbor model
+Training set outcome distribution:
+
+  low  high 
+14135  1904 </code></pre>
+</div>
+</div>
+</section>
+<section id="b.-the-prediction" class="level4">
+<h4 class="anchored" data-anchor-id="b.-the-prediction">B. The Prediction</h4>
+<section id="prediction-on-training-set" class="level5">
+<h5 class="anchored" data-anchor-id="prediction-on-training-set">Prediction on training Set</h5>
+<p><strong>kNN_pred_k3_train</strong> will be the prediction for the training set for the kNN model for k = 3.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a>knn_pred_k3_train <span class="ot">&lt;-</span> <span class="fu">predict</span>(knn_model_k3, <span class="at">newdata =</span> train_norm_kNN[, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">17</span>)],</span>
+<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a>                             <span class="at">type =</span> <span class="st">"class"</span>)</span>
+<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(knn_pred_k3_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] low  low  low  low  low  high
+Levels: low high</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confusionMatrix</span>(knn_pred_k3_train, <span class="fu">as.factor</span>(train_norm_kNN[, <span class="dv">17</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Confusion Matrix and Statistics
+
+          Reference
+Prediction   low  high
+      low  13843   466
+      high   292  1438
+                                         
+               Accuracy : 0.9527         
+                 95% CI : (0.9493, 0.956)
+    No Information Rate : 0.8813         
+    P-Value [Acc &gt; NIR] : &lt; 2.2e-16      
+                                         
+                  Kappa : 0.7648         
+                                         
+ Mcnemar's Test P-Value : 3.307e-10      
+                                         
+            Sensitivity : 0.9793         
+            Specificity : 0.7553         
+         Pos Pred Value : 0.9674         
+         Neg Pred Value : 0.8312         
+             Prevalence : 0.8813         
+         Detection Rate : 0.8631         
+   Detection Prevalence : 0.8921         
+      Balanced Accuracy : 0.8673         
+                                         
+       'Positive' Class : low            
+                                         </code></pre>
+</div>
+</div>
+</section>
+<section id="prediction-on-validation-set" class="level5">
+<h5 class="anchored" data-anchor-id="prediction-on-validation-set">Prediction on Validation Set</h5>
+<p><strong>kNN_pred_k3_valid</strong> will be the prediction for the validation set for the kNN model for k = 3.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a>knn_pred_k3_valid <span class="ot">&lt;-</span> <span class="fu">predict</span>(knn_model_k3, <span class="at">newdata =</span> valid_norm_kNN[, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">17</span>)],</span>
+<span id="cb91-2"><a href="#cb91-2" aria-hidden="true" tabindex="-1"></a>                             <span class="at">type =</span> <span class="st">"class"</span>)</span>
+<span id="cb91-3"><a href="#cb91-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(knn_pred_k3_valid)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] low  low  high low  low  low 
+Levels: low high</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb93"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confusionMatrix</span>(knn_pred_k3_valid, <span class="fu">as.factor</span>(valid_norm_kNN[, <span class="dv">17</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Confusion Matrix and Statistics
+
+          Reference
+Prediction  low high
+      low  9266  349
+      high  211  867
+                                          
+               Accuracy : 0.9476          
+                 95% CI : (0.9432, 0.9518)
+    No Information Rate : 0.8863          
+    P-Value [Acc &gt; NIR] : &lt; 2.2e-16       
+                                          
+                  Kappa : 0.7267          
+                                          
+ Mcnemar's Test P-Value : 7.068e-09       
+                                          
+            Sensitivity : 0.9777          
+            Specificity : 0.7130          
+         Pos Pred Value : 0.9637          
+         Neg Pred Value : 0.8043          
+             Prevalence : 0.8863          
+         Detection Rate : 0.8665          
+   Detection Prevalence : 0.8992          
+      Balanced Accuracy : 0.8454          
+                                          
+       'Positive' Class : low             
+                                          </code></pre>
+</div>
+</div>
+</section>
+<section id="predicting-the-car-test" class="level5">
+<h5 class="anchored" data-anchor-id="predicting-the-car-test">***Predicting the Car Test</h5>
+<p><strong>car_test_predict_kNN_k3</strong> will be the values of the car test prediction from kNN model with k = 3.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb95"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a>car_test_predict_kNN_k3 <span class="ot">&lt;-</span> <span class="fu">predict</span>(knn_model_k3,</span>
+<span id="cb95-2"><a href="#cb95-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">newdata =</span> car_test_norm_kNN,</span>
+<span id="cb95-3"><a href="#cb95-3" aria-hidden="true" tabindex="-1"></a>                            <span class="at">type =</span> <span class="st">"class"</span>)</span>
+<span id="cb95-4"><a href="#cb95-4" aria-hidden="true" tabindex="-1"></a>car_test_predict_kNN_k3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] high low  high low  low  low 
+Levels: low high</code></pre>
+</div>
+</div>
+</section>
+<section id="probabilities" class="level5">
+<h5 class="anchored" data-anchor-id="probabilities">***Probabilities</h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb97"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a>knn_pred_k3_prob <span class="ot">&lt;-</span> <span class="fu">predict</span>(knn_model_k3, <span class="at">newdata =</span> valid_norm_kNN[, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">17</span>)],</span>
+<span id="cb97-2"><a href="#cb97-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">type =</span> <span class="st">"prob"</span>)</span>
+<span id="cb97-3"><a href="#cb97-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(knn_pred_k3_prob)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      low high
+[1,] 1.00 0.00
+[2,] 1.00 0.00
+[3,] 0.45 0.55
+[4,] 1.00 0.00
+[5,] 1.00 0.00
+[6,] 1.00 0.00</code></pre>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="k-5" class="level3">
+<h3 class="anchored" data-anchor-id="k-5">3.2 k = 5</h3>
+<section id="a.-the-training-1" class="level4">
+<h4 class="anchored" data-anchor-id="a.-the-training-1">A. The Training</h4>
+<p><strong>kNN_model_k5</strong> is kNN model for k = 5.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb99"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a>knn_model_k5 <span class="ot">&lt;-</span> caret<span class="sc">::</span><span class="fu">knn3</span>(price_nom <span class="sc">~</span>.,</span>
+<span id="cb99-2"><a href="#cb99-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">data =</span> train_norm_kNN, <span class="at">k =</span> <span class="dv">5</span>)</span>
+<span id="cb99-3"><a href="#cb99-3" aria-hidden="true" tabindex="-1"></a>knn_model_k5</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>5-nearest neighbor model
+Training set outcome distribution:
+
+  low  high 
+14135  1904 </code></pre>
+</div>
+</div>
+</section>
+<section id="b.-the-prediction-1" class="level4">
+<h4 class="anchored" data-anchor-id="b.-the-prediction-1">B. The Prediction</h4>
+<section id="prediction-on-training-set-1" class="level5">
+<h5 class="anchored" data-anchor-id="prediction-on-training-set-1">Prediction on Training Set</h5>
+<p><strong>kNN_pred_k5_train</strong> is the prediction for the training set for the kNN model for k = 5.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb101"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a>knn_pred_k5_train <span class="ot">&lt;-</span> <span class="fu">predict</span>(knn_model_k5, <span class="at">newdata =</span> train_norm_kNN[, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">17</span>)],</span>
+<span id="cb101-2"><a href="#cb101-2" aria-hidden="true" tabindex="-1"></a>                             <span class="at">type =</span> <span class="st">"class"</span>)</span>
+<span id="cb101-3"><a href="#cb101-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(knn_pred_k5_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] low  low  low  low  low  high
+Levels: low high</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb103"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confusionMatrix</span>(knn_pred_k5_train, <span class="fu">as.factor</span>(train_norm_kNN[, <span class="dv">17</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Confusion Matrix and Statistics
+
+          Reference
+Prediction   low  high
+      low  13845   523
+      high   290  1381
+                                          
+               Accuracy : 0.9493          
+                 95% CI : (0.9458, 0.9527)
+    No Information Rate : 0.8813          
+    P-Value [Acc &gt; NIR] : &lt; 2.2e-16       
+                                          
+                  Kappa : 0.7442          
+                                          
+ Mcnemar's Test P-Value : 4.065e-16       
+                                          
+            Sensitivity : 0.9795          
+            Specificity : 0.7253          
+         Pos Pred Value : 0.9636          
+         Neg Pred Value : 0.8265          
+             Prevalence : 0.8813          
+         Detection Rate : 0.8632          
+   Detection Prevalence : 0.8958          
+      Balanced Accuracy : 0.8524          
+                                          
+       'Positive' Class : low             
+                                          </code></pre>
+</div>
+</div>
+</section>
+<section id="prediction-on-validation-set-1" class="level5">
+<h5 class="anchored" data-anchor-id="prediction-on-validation-set-1">Prediction on Validation Set</h5>
+<p><strong>kNN_pred_k5_valid</strong> is the prediction for the validation set for the kNN model for k = 5.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb105"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a>knn_pred_k5_valid <span class="ot">&lt;-</span> <span class="fu">predict</span>(knn_model_k5, <span class="at">newdata =</span> valid_norm_kNN[, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">17</span>)],</span>
+<span id="cb105-2"><a href="#cb105-2" aria-hidden="true" tabindex="-1"></a>                             <span class="at">type =</span> <span class="st">"class"</span>)</span>
+<span id="cb105-3"><a href="#cb105-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(knn_pred_k5_valid)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] low  low  high low  low  low 
+Levels: low high</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb107"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confusionMatrix</span>(knn_pred_k5_valid, <span class="fu">as.factor</span>(valid_norm_kNN[, <span class="dv">17</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Confusion Matrix and Statistics
+
+          Reference
+Prediction  low high
+      low  9295  391
+      high  182  825
+                                         
+               Accuracy : 0.9464         
+                 95% CI : (0.942, 0.9506)
+    No Information Rate : 0.8863         
+    P-Value [Acc &gt; NIR] : &lt; 2.2e-16      
+                                         
+                  Kappa : 0.7126         
+                                         
+ Mcnemar's Test P-Value : &lt; 2.2e-16      
+                                         
+            Sensitivity : 0.9808         
+            Specificity : 0.6785         
+         Pos Pred Value : 0.9596         
+         Neg Pred Value : 0.8193         
+             Prevalence : 0.8863         
+         Detection Rate : 0.8693         
+   Detection Prevalence : 0.9058         
+      Balanced Accuracy : 0.8296         
+                                         
+       'Positive' Class : low            
+                                         </code></pre>
+</div>
+</div>
+</section>
+<section id="predicting-the-car-test-1" class="level5">
+<h5 class="anchored" data-anchor-id="predicting-the-car-test-1">***Predicting the Car Test</h5>
+<p><strong>car_test_predict_kNN_k5</strong> will be the values of the car test prediction from kNN model with k = 5.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb109"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a>car_test_predict_kNN_k5 <span class="ot">&lt;-</span> <span class="fu">predict</span>(knn_model_k5,</span>
+<span id="cb109-2"><a href="#cb109-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">newdata =</span> car_test_norm_kNN,</span>
+<span id="cb109-3"><a href="#cb109-3" aria-hidden="true" tabindex="-1"></a>                            <span class="at">type =</span> <span class="st">"class"</span>)</span>
+<span id="cb109-4"><a href="#cb109-4" aria-hidden="true" tabindex="-1"></a>car_test_predict_kNN_k5</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] high low  high low  low  low 
+Levels: low high</code></pre>
+</div>
+</div>
+</section>
+<section id="probabilities-1" class="level5">
+<h5 class="anchored" data-anchor-id="probabilities-1">***Probabilities</h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb111"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a>knn_pred_k5_prob <span class="ot">&lt;-</span> <span class="fu">predict</span>(knn_model_k5, <span class="at">newdata =</span> valid_norm_kNN[, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">17</span>)],</span>
+<span id="cb111-2"><a href="#cb111-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">type =</span> <span class="st">"prob"</span>)</span>
+<span id="cb111-3"><a href="#cb111-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(knn_pred_k5_prob)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      low high
+[1,] 1.00 0.00
+[2,] 1.00 0.00
+[3,] 0.45 0.55
+[4,] 1.00 0.00
+[5,] 1.00 0.00
+[6,] 1.00 0.00</code></pre>
+</div>
+</div>
+</section>
+</section>
+</section>
+</section>
+<section id="model-evaluation" class="level2">
+<h2 class="anchored" data-anchor-id="model-evaluation">4. Model Evaluation</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb113"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ROSE)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loaded ROSE 0.0-4</code></pre>
+</div>
+</div>
+<section id="k-3-1" class="level3">
+<h3 class="anchored" data-anchor-id="k-3-1">4.1 k = 3</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb115"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a>ROSE<span class="sc">::</span><span class="fu">roc.curve</span>(valid_norm_kNN<span class="sc">$</span>price_nom, knn_pred_k3_valid)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Project_1_Final_files/figure-html/unnamed-chunk-51-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Area under the curve (AUC): 0.845</code></pre>
+</div>
+</div>
+</section>
+<section id="k-5-1" class="level3">
+<h3 class="anchored" data-anchor-id="k-5-1">4.2 k = 5</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb117"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a>ROSE<span class="sc">::</span><span class="fu">roc.curve</span>(valid_norm_kNN<span class="sc">$</span>price_nom, knn_pred_k5_valid)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Project_1_Final_files/figure-html/unnamed-chunk-52-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Area under the curve (AUC): 0.830</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="weighted-data-knn" class="level2">
+<h2 class="anchored" data-anchor-id="weighted-data-knn">5. Weighted Data kNN</h2>
+<p><strong>train_kNN_df_rose</strong> is the data frame for the training data after balancing the data for the kNN model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb119"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb119-1"><a href="#cb119-1" aria-hidden="true" tabindex="-1"></a>train_kNN_df_rose <span class="ot">&lt;-</span> <span class="fu">ROSE</span>(price_nom <span class="sc">~</span>., <span class="at">data =</span> train_kNN,</span>
+<span id="cb119-2"><a href="#cb119-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">seed =</span> <span class="dv">666</span>)<span class="sc">$</span>data</span>
+<span id="cb119-3"><a href="#cb119-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb119-4"><a href="#cb119-4" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(train_kNN_df_rose<span class="sc">$</span>price_nom)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ low high 
+7953 8086 </code></pre>
+</div>
+</div>
+<p><strong>train_norm_kNN_2</strong> is the 2nd data frame for the normalization of the training data of the kNN model for the balance data.</p>
+<p><strong>valid_norm_kNN_2</strong> is the 2nd data frame for the validation of the validation data of the kNN model for balance data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb121"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb121-1"><a href="#cb121-1" aria-hidden="true" tabindex="-1"></a>train_norm_kNN_2 <span class="ot">&lt;-</span> train_kNN_df_rose</span>
+<span id="cb121-2"><a href="#cb121-2" aria-hidden="true" tabindex="-1"></a>valid_norm_kNN_2 <span class="ot">&lt;-</span> valid_kNN</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb122"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb122-1"><a href="#cb122-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(train_norm_kNN_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "fleet"            "frame_damaged"    "franchise_dealer" "has_accidents"   
+ [5] "is_cpo"           "is_new"           "is_oemcpo"        "salvage"         
+ [9] "theft_title"      "back_legroom"     "fuel_tank_volume" "height"          
+[13] "horsepower"       "length"           "maximum_seating"  "owner_count"     
+[17] "price_nom"       </code></pre>
+</div>
+</div>
+<p><strong>norm_values_kNN_2</strong> is the 2nd data frame that was prepared for the analysis for the kNN model for the balance data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb124"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb124-1"><a href="#cb124-1" aria-hidden="true" tabindex="-1"></a>norm_values_kNN_2 <span class="ot">&lt;-</span> <span class="fu">preProcess</span>(train_kNN[, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>, <span class="dv">17</span>)],</span>
+<span id="cb124-2"><a href="#cb124-2" aria-hidden="true" tabindex="-1"></a>                                <span class="at">method =</span> <span class="fu">c</span>(<span class="st">"center"</span>,</span>
+<span id="cb124-3"><a href="#cb124-3" aria-hidden="true" tabindex="-1"></a>                                           <span class="st">"scale"</span>))</span>
+<span id="cb124-4"><a href="#cb124-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb124-5"><a href="#cb124-5" aria-hidden="true" tabindex="-1"></a>train_norm_kNN_2[, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>, <span class="dv">17</span>)] <span class="ot">&lt;-</span> <span class="fu">predict</span>(norm_values_kNN_2,</span>
+<span id="cb124-6"><a href="#cb124-6" aria-hidden="true" tabindex="-1"></a>                                      train_kNN[, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>, <span class="dv">17</span>)])</span>
+<span id="cb124-7"><a href="#cb124-7" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(train_norm_kNN_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  fleet frame_damaged franchise_dealer has_accidents is_cpo is_new is_oemcpo
+1 False         False             True         False   True  False      True
+2 False         False             True         False  False  False     False
+3  True         False             True         False  False  False     False
+4                                 True                False   True     False
+5                                 True                False   True     False
+6                                 True                False   True     False
+  salvage theft_title back_legroom fuel_tank_volume      height  horsepower
+1   False       False   0.64311937       0.11767538 -0.89323874  0.68578482
+2   False       False   0.07772847      -0.38966276 -0.06143842 -0.72440277
+3   False       False   0.14054968       1.48358578  1.45874836 -0.04797133
+4                      -0.64471546       0.02011035 -1.22309059  0.31890675
+5                       0.29760271      -0.27258473 -1.10835951 -0.75879759
+6                       0.17196029       1.48358578  1.65952775  1.78641904
+       length maximum_seating owner_count price_nom
+1  0.40667868       -0.497447   0.2389365       low
+2 -0.85592908       -0.497447  -0.7802928       low
+3  0.56128371        2.232441   3.2966242       low
+4 -0.09836443       -0.497447   1.2581657       low
+5 -0.10867143       -0.497447   0.2389365       low
+6  1.88057997       -0.497447  -0.7802928       low</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb126"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb126-1"><a href="#cb126-1" aria-hidden="true" tabindex="-1"></a>valid_norm_kNN_2[, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>, <span class="dv">17</span>)] <span class="ot">&lt;-</span> <span class="fu">predict</span>(norm_values_kNN_2,</span>
+<span id="cb126-2"><a href="#cb126-2" aria-hidden="true" tabindex="-1"></a>                                      valid_kNN[, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>, <span class="dv">17</span>)])</span>
+<span id="cb126-3"><a href="#cb126-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(valid_norm_kNN_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   fleet frame_damaged franchise_dealer has_accidents is_cpo is_new is_oemcpo
+2                                  True                False   True     False
+3                                  True                False   True     False
+6  False         False             True         False  False   True     False
+9   True         False             True         False  False  False     False
+10                                 True                False   True     False
+11                                 True                False   True     False
+   salvage theft_title back_legroom fuel_tank_volume      height  horsepower
+2                        -1.0530533      -1.20920900 -0.85021459 -1.21739518
+3                         0.7687618      -0.85797490  0.12499958 -0.62121832
+6    False       False    1.7739012       1.48358578  1.65952775  1.49979554
+9    False       False    0.5802982       0.02011035 -0.96494566  0.69724976
+10                        0.6117088      -0.54576681 -0.03275565  0.08960795
+11                       -0.8960003      -1.11164397  0.12499958 -0.77026253
+       length maximum_seating owner_count price_nom
+2  -1.7114103      -0.4974470  -0.7802928       low
+3  -0.5621795      -0.4974470  -0.7802928       low
+6   2.0042640       0.4125156  -0.7802928       low
+9   0.4272927      -0.4974470   0.2389365       low
+10 -0.5106445      -0.4974470  -0.7802928       low
+11 -1.3609722      -0.4974470  -0.7802928       low</code></pre>
+</div>
+</div>
+<p><strong>knn_model_2</strong> is the kNN model 2 for the balance data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb128"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a>knn_model_2 <span class="ot">&lt;-</span> caret<span class="sc">::</span><span class="fu">knn3</span>(price_nom <span class="sc">~</span> ., <span class="at">data =</span> train_norm_kNN_2, <span class="at">k =</span> <span class="dv">15</span>)</span>
+<span id="cb128-2"><a href="#cb128-2" aria-hidden="true" tabindex="-1"></a>knn_model_2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>15-nearest neighbor model
+Training set outcome distribution:
+
+ low high 
+7953 8086 </code></pre>
+</div>
+</div>
+<section id="predict-training-set" class="level4">
+<h4 class="anchored" data-anchor-id="predict-training-set">5.1 Predict training set</h4>
+<p><strong>knn_pred_train_2</strong> is the prediction for the training set for the kNN model 2.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb130"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb130-1"><a href="#cb130-1" aria-hidden="true" tabindex="-1"></a>knn_pred_train_2 <span class="ot">&lt;-</span> <span class="fu">predict</span>(knn_model_2, <span class="at">newdata =</span> </span>
+<span id="cb130-2"><a href="#cb130-2" aria-hidden="true" tabindex="-1"></a>                              train_norm_kNN_2[, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">17</span>)],</span>
+<span id="cb130-3"><a href="#cb130-3" aria-hidden="true" tabindex="-1"></a>                            <span class="at">type =</span> <span class="st">"class"</span>)</span>
+<span id="cb130-4"><a href="#cb130-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(knn_pred_train_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] low  low  low  high high high
+Levels: low high</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb132"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb132-1"><a href="#cb132-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confusionMatrix</span>(knn_pred_train_2, <span class="fu">as.factor</span>(train_norm_kNN_2[, <span class="dv">17</span>]),</span>
+<span id="cb132-2"><a href="#cb132-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">positive =</span> <span class="st">"low"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Confusion Matrix and Statistics
+
+          Reference
+Prediction  low high
+      low  4884 1565
+      high 3069 6521
+                                         
+               Accuracy : 0.7111         
+                 95% CI : (0.704, 0.7181)
+    No Information Rate : 0.5041         
+    P-Value [Acc &gt; NIR] : &lt; 2.2e-16      
+                                         
+                  Kappa : 0.4212         
+                                         
+ Mcnemar's Test P-Value : &lt; 2.2e-16      
+                                         
+            Sensitivity : 0.6141         
+            Specificity : 0.8065         
+         Pos Pred Value : 0.7573         
+         Neg Pred Value : 0.6800         
+             Prevalence : 0.4959         
+         Detection Rate : 0.3045         
+   Detection Prevalence : 0.4021         
+      Balanced Accuracy : 0.7103         
+                                         
+       'Positive' Class : low            
+                                         </code></pre>
+</div>
+</div>
+</section>
+<section id="predict-validation-set" class="level4">
+<h4 class="anchored" data-anchor-id="predict-validation-set">5.2 Predict Validation set</h4>
+<p><strong>knn_pred_valid_2</strong> is the prediction for the validation set for the kNN model 2.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb134"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb134-1"><a href="#cb134-1" aria-hidden="true" tabindex="-1"></a>knn_pred_valid_2 <span class="ot">&lt;-</span> <span class="fu">predict</span>(knn_model_2,</span>
+<span id="cb134-2"><a href="#cb134-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">newdata =</span> valid_norm_kNN_2[, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">17</span>)],</span>
+<span id="cb134-3"><a href="#cb134-3" aria-hidden="true" tabindex="-1"></a>                            <span class="at">type =</span> <span class="st">"class"</span>)</span>
+<span id="cb134-4"><a href="#cb134-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(knn_pred_valid_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] high high low  low  high high
+Levels: low high</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb136"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb136-1"><a href="#cb136-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confusionMatrix</span>(knn_pred_valid_2, <span class="fu">as.factor</span>(valid_norm_kNN_2[, <span class="dv">17</span>]),</span>
+<span id="cb136-2"><a href="#cb136-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">positive =</span> <span class="st">"low"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Confusion Matrix and Statistics
+
+          Reference
+Prediction  low high
+      low  5418  257
+      high 4059  959
+                                         
+               Accuracy : 0.5964         
+                 95% CI : (0.587, 0.6057)
+    No Information Rate : 0.8863         
+    P-Value [Acc &gt; NIR] : 1              
+                                         
+                  Kappa : 0.1525         
+                                         
+ Mcnemar's Test P-Value : &lt;2e-16         
+                                         
+            Sensitivity : 0.5717         
+            Specificity : 0.7887         
+         Pos Pred Value : 0.9547         
+         Neg Pred Value : 0.1911         
+             Prevalence : 0.8863         
+         Detection Rate : 0.5067         
+   Detection Prevalence : 0.5307         
+      Balanced Accuracy : 0.6802         
+                                         
+       'Positive' Class : low            
+                                         </code></pre>
+</div>
+</div>
+</section>
+<section id="model-evaluation-1" class="level4">
+<h4 class="anchored" data-anchor-id="model-evaluation-1">5.3 Model Evaluation</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb138"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb138-1"><a href="#cb138-1" aria-hidden="true" tabindex="-1"></a>ROSE<span class="sc">::</span><span class="fu">roc.curve</span>(valid_norm_kNN_2<span class="sc">$</span>price_nom, knn_pred_valid_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Project_1_Final_files/figure-html/unnamed-chunk-63-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Area under the curve (AUC): 0.680</code></pre>
+</div>
+</div>
+</section>
+<section id="predicting-the-car-test-2" class="level4">
+<h4 class="anchored" data-anchor-id="predicting-the-car-test-2">***Predicting the Car Test</h4>
+<p><strong>car_test_predict_kNN_model_2</strong> is the values of the car test prediction from kNN model 2.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb140"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb140-1"><a href="#cb140-1" aria-hidden="true" tabindex="-1"></a>car_test_predict_kNN_model_2 <span class="ot">&lt;-</span> <span class="fu">predict</span>(knn_model_2,</span>
+<span id="cb140-2"><a href="#cb140-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">newdata =</span> car_test_norm_kNN,</span>
+<span id="cb140-3"><a href="#cb140-3" aria-hidden="true" tabindex="-1"></a>                            <span class="at">type =</span> <span class="st">"class"</span>)</span>
+<span id="cb140-4"><a href="#cb140-4" aria-hidden="true" tabindex="-1"></a>car_test_predict_kNN_model_2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] high low  high low  low  low 
+Levels: low high</code></pre>
+</div>
+</div>
+</section>
+<section id="probabilities-2" class="level4">
+<h4 class="anchored" data-anchor-id="probabilities-2">***Probabilities</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb142"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb142-1"><a href="#cb142-1" aria-hidden="true" tabindex="-1"></a>knn_pred_model_2_prob <span class="ot">&lt;-</span> <span class="fu">predict</span>(knn_model_2, <span class="at">newdata =</span> valid_norm_kNN_2[, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">17</span>)],</span>
+<span id="cb142-2"><a href="#cb142-2" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">type =</span> <span class="st">"prob"</span>)</span>
+<span id="cb142-3"><a href="#cb142-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(knn_pred_model_2_prob)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           low      high
+[1,] 0.4615385 0.5384615
+[2,] 0.3684211 0.6315789
+[3,] 0.5200000 0.4800000
+[4,] 0.8666667 0.1333333
+[5,] 0.3846154 0.6153846
+[6,] 0.3783784 0.6216216</code></pre>
+</div>
+</div>
+</section>
+<section id="conclusion-about-the-probabilities" class="level3">
+<h3 class="anchored" data-anchor-id="conclusion-about-the-probabilities">Conclusion About the Probabilities</h3>
+<p>We can see that the probabilities for k = 3 and k = 5 is not balance and accurate due to the imbalance in the data but after we create a new model for kNN and balance the data, the probabilities has become more accurate. That means we can be sure that the weighted data is eligible to use to predict the outcome.</p>
+</section>
+</section>
+</section>
+<section id="iii.-classification-tree-model" class="level1">
+<h1>III. Classification Tree model</h1>
+<section id="data-for-classification-tree-model" class="level2">
+<h2 class="anchored" data-anchor-id="data-for-classification-tree-model">1. Data for Classification Tree model</h2>
+<p>Next we will create a classification tree. We use a classification tree to analyze both numerical and categorical data, while kNN can analyze only int and numerical data.</p>
+<p><strong>cars_class_tr</strong> is the data frame for the Classification Tree model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb144"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb144-1"><a href="#cb144-1" aria-hidden="true" tabindex="-1"></a>cars_class_tr <span class="ot">&lt;-</span> cars</span>
+<span id="cb144-2"><a href="#cb144-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(cars_class_tr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   29233 obs. of  17 variables:
+ $ fleet           : chr  "" "" "" "" ...
+ $ frame_damaged   : chr  "" "" "" "" ...
+ $ franchise_dealer: chr  "True" "True" "True" "True" ...
+ $ has_accidents   : chr  "" "" "" "" ...
+ $ is_cpo          : chr  "False" "False" "False" "False" ...
+ $ is_new          : chr  "True" "True" "True" "True" ...
+ $ is_oemcpo       : chr  "False" "False" "False" "False" ...
+ $ salvage         : chr  "" "" "" "" ...
+ $ theft_title     : chr  "" "" "" "" ...
+ $ back_legroom    : num  38.2 34.6 40.4 34.6 39.6 43.6 43.6 38.1 39.8 NA ...
+ $ fuel_tank_volume: num  16.4 12.2 14 13.2 19.5 26 34 18.5 18.5 NA ...
+ $ height          : num  65 59.7 66.5 61.6 72.2 77.2 81.5 66.1 58.9 NA ...
+ $ horsepower      : int  181 138 190 147 280 375 450 175 305 NA ...
+ $ length          : num  176 160 182 164 190 ...
+ $ maximum_seating : int  5 5 5 5 5 6 6 5 5 NA ...
+ $ owner_count     : int  0 0 0 0 0 0 1 1 1 0 ...
+ $ price_nom       : int  0 0 0 0 0 0 0 0 0 0 ...</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb146"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb146-1"><a href="#cb146-1" aria-hidden="true" tabindex="-1"></a>cars_class_tr<span class="sc">$</span>price_nom <span class="ot">&lt;-</span> <span class="fu">factor</span>(cars_class_tr<span class="sc">$</span>price_nom,</span>
+<span id="cb146-2"><a href="#cb146-2" aria-hidden="true" tabindex="-1"></a>                             <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">'0'</span>, <span class="st">'1'</span>),</span>
+<span id="cb146-3"><a href="#cb146-3" aria-hidden="true" tabindex="-1"></a>                             <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">'low'</span>, <span class="st">'high'</span>))</span>
+<span id="cb146-4"><a href="#cb146-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb146-5"><a href="#cb146-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(cars_class_tr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  fleet frame_damaged franchise_dealer has_accidents is_cpo is_new is_oemcpo
+1                                 True                False   True     False
+2                                 True                False   True     False
+3                                 True                False   True     False
+4                                 True                False   True     False
+5                                 True                False   True     False
+6 False         False             True         False  False   True     False
+  salvage theft_title back_legroom fuel_tank_volume height horsepower length
+1                             38.2             16.4   65.0        181  176.4
+2                             34.6             12.2   59.7        138  159.8
+3                             40.4             14.0   66.5        190  182.1
+4                             34.6             13.2   61.6        147  164.0
+5                             39.6             19.5   72.2        280  190.5
+6   False       False         43.6             26.0   77.2        375  231.9
+  maximum_seating owner_count price_nom
+1               5           0       low
+2               5           0       low
+3               5           0       low
+4               5           0       low
+5               5           0       low
+6               6           0       low</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb148"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb148-1"><a href="#cb148-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(cars_class_tr<span class="sc">$</span>price_nom)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  low  high 
+25575  3658 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb150"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb150-1"><a href="#cb150-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(cars_class_tr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   29233 obs. of  17 variables:
+ $ fleet           : chr  "" "" "" "" ...
+ $ frame_damaged   : chr  "" "" "" "" ...
+ $ franchise_dealer: chr  "True" "True" "True" "True" ...
+ $ has_accidents   : chr  "" "" "" "" ...
+ $ is_cpo          : chr  "False" "False" "False" "False" ...
+ $ is_new          : chr  "True" "True" "True" "True" ...
+ $ is_oemcpo       : chr  "False" "False" "False" "False" ...
+ $ salvage         : chr  "" "" "" "" ...
+ $ theft_title     : chr  "" "" "" "" ...
+ $ back_legroom    : num  38.2 34.6 40.4 34.6 39.6 43.6 43.6 38.1 39.8 NA ...
+ $ fuel_tank_volume: num  16.4 12.2 14 13.2 19.5 26 34 18.5 18.5 NA ...
+ $ height          : num  65 59.7 66.5 61.6 72.2 77.2 81.5 66.1 58.9 NA ...
+ $ horsepower      : int  181 138 190 147 280 375 450 175 305 NA ...
+ $ length          : num  176 160 182 164 190 ...
+ $ maximum_seating : int  5 5 5 5 5 6 6 5 5 NA ...
+ $ owner_count     : int  0 0 0 0 0 0 1 1 1 0 ...
+ $ price_nom       : Factor w/ 2 levels "low","high": 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
+</div>
+</div>
+<p>Here we set the training and validation set for the classification tree model:</p>
+<p><strong>train_index_class_tr</strong> is the training index for the Classification Tree model.</p>
+<p><strong>valid_index_class_tr</strong> is the validation index for the Classification Tree model.</p>
+<p><strong>train_class</strong> is the data frame for the training data for the Classification Tree model after splitting.</p>
+<p><strong>valid_class</strong> is the data frame for the validation data for the Classification Tree model after splitting.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb152"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb152-1"><a href="#cb152-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set Training and Validation set for Classification Tree model</span></span>
+<span id="cb152-2"><a href="#cb152-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb152-3"><a href="#cb152-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">666</span>)</span>
+<span id="cb152-4"><a href="#cb152-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb152-5"><a href="#cb152-5" aria-hidden="true" tabindex="-1"></a>train_index_class_tr <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(cars_class_tr), <span class="fl">0.7</span> <span class="sc">*</span> <span class="fu">nrow</span>(cars_class_tr))</span>
+<span id="cb152-6"><a href="#cb152-6" aria-hidden="true" tabindex="-1"></a>valid_index_class_tr <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(cars_class_tr), train_index_class_tr)</span>
+<span id="cb152-7"><a href="#cb152-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb152-8"><a href="#cb152-8" aria-hidden="true" tabindex="-1"></a>train_class <span class="ot">&lt;-</span> cars_class_tr[train_index_class_tr,]</span>
+<span id="cb152-9"><a href="#cb152-9" aria-hidden="true" tabindex="-1"></a>valid_class <span class="ot">&lt;-</span> cars_class_tr[valid_index_class_tr,]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb153"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb153-1"><a href="#cb153-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(train_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 20463</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb155"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb155-1"><a href="#cb155-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(valid_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 8770</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb157"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb157-1"><a href="#cb157-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(train_class,<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      fleet frame_damaged franchise_dealer has_accidents is_cpo is_new
+17982  True         False             True         False  False  False
+12926                                 True                False   True
+13195                                 True                False   True
+23675  True         False             True         False  False  False
+15900 False         False            False         False  False  False
+873   False         False             True         False   True  False
+17036                                 True                False   True
+18081 False         False            False         False  False  False
+1074  False         False             True         False  False  False
+6275                                  True                False   True
+      is_oemcpo salvage theft_title back_legroom fuel_tank_volume height
+17982     False   False       False         41.5             23.3   76.6
+12926     False                             38.6             24.6   69.3
+13195     False                               NA               NA     NA
+23675     False   False       False         39.8             18.5   58.9
+15900     False   False       False         36.3             21.0   65.7
+873       False   False       False         34.8             17.7   63.9
+17036     False                             39.0             19.2   69.9
+18081     False   False       False         38.5             15.3   66.1
+1074      False   False       False         37.2             15.9   67.1
+6275      False                             34.5             18.0   71.8
+      horsepower length maximum_seating owner_count price_nom
+17982        375  210.0               8           1      high
+12926        295  189.8               5           0       low
+13195         NA     NA              NA           0       low
+23675        305  201.3               5           1       low
+15900        308  190.3               5           2       low
+873          240  184.5               5           2       low
+17036        300  198.8               7           0      high
+18081        166  177.9               5           1       low
+1074         176  183.5               5           1       low
+6275         270  210.8               5           0       low</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb159"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb159-1"><a href="#cb159-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(valid_class, <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   fleet frame_damaged franchise_dealer has_accidents is_cpo is_new is_oemcpo
+2                                  True                False   True     False
+3                                  True                False   True     False
+6  False         False             True         False  False   True     False
+9   True         False             True         False  False  False     False
+10                                 True                False   True     False
+12                                 True                False   True     False
+19 False         False            False         False  False  False     False
+21                                 True                False   True     False
+31  True         False            False         False  False  False     False
+38 False         False             True         False  False  False     False
+   salvage theft_title back_legroom fuel_tank_volume height horsepower length
+2                              34.6             12.2   59.7        138  159.8
+3                              40.4             14.0   66.5        190  182.1
+6    False       False         43.6             26.0   77.2        375  231.9
+9    False       False         39.8             18.5   58.9        305  201.3
+10                               NA               NA     NA         NA     NA
+12                               NA               NA     NA         NA     NA
+19   False       False         34.1             17.4   56.2        329  190.0
+21                             37.8             18.5   65.3        248  183.6
+31   False       False         36.5             20.0   69.0        283  203.7
+38   False       False         29.8             16.0   56.1        315  188.1
+   maximum_seating owner_count price_nom
+2                5           0       low
+3                5           0       low
+6                6           0       low
+9                5           1       low
+10              NA           0       low
+12              NA           0       low
+19               4           1      high
+21               5           0      high
+31               7           1       low
+38               4           1       low</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb161"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb161-1"><a href="#cb161-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(train_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   20463 obs. of  17 variables:
+ $ fleet           : chr  "True" "" "" "True" ...
+ $ frame_damaged   : chr  "False" "" "" "False" ...
+ $ franchise_dealer: chr  "True" "True" "True" "True" ...
+ $ has_accidents   : chr  "False" "" "" "False" ...
+ $ is_cpo          : chr  "False" "False" "False" "False" ...
+ $ is_new          : chr  "False" "True" "True" "False" ...
+ $ is_oemcpo       : chr  "False" "False" "False" "False" ...
+ $ salvage         : chr  "False" "" "" "False" ...
+ $ theft_title     : chr  "False" "" "" "False" ...
+ $ back_legroom    : num  41.5 38.6 NA 39.8 36.3 34.8 39 38.5 37.2 34.5 ...
+ $ fuel_tank_volume: num  23.3 24.6 NA 18.5 21 17.7 19.2 15.3 15.9 18 ...
+ $ height          : num  76.6 69.3 NA 58.9 65.7 63.9 69.9 66.1 67.1 71.8 ...
+ $ horsepower      : int  375 295 NA 305 308 240 300 166 176 270 ...
+ $ length          : num  210 190 NA 201 190 ...
+ $ maximum_seating : int  8 5 NA 5 5 5 7 5 5 5 ...
+ $ owner_count     : int  1 0 0 1 2 2 0 1 1 0 ...
+ $ price_nom       : Factor w/ 2 levels "low","high": 2 1 1 1 1 1 2 1 1 1 ...</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb163"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb163-1"><a href="#cb163-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(valid_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   8770 obs. of  17 variables:
+ $ fleet           : chr  "" "" "False" "True" ...
+ $ frame_damaged   : chr  "" "" "False" "False" ...
+ $ franchise_dealer: chr  "True" "True" "True" "True" ...
+ $ has_accidents   : chr  "" "" "False" "False" ...
+ $ is_cpo          : chr  "False" "False" "False" "False" ...
+ $ is_new          : chr  "True" "True" "True" "False" ...
+ $ is_oemcpo       : chr  "False" "False" "False" "False" ...
+ $ salvage         : chr  "" "" "False" "False" ...
+ $ theft_title     : chr  "" "" "False" "False" ...
+ $ back_legroom    : num  34.6 40.4 43.6 39.8 NA NA 34.1 37.8 36.5 29.8 ...
+ $ fuel_tank_volume: num  12.2 14 26 18.5 NA NA 17.4 18.5 20 16 ...
+ $ height          : num  59.7 66.5 77.2 58.9 NA NA 56.2 65.3 69 56.1 ...
+ $ horsepower      : int  138 190 375 305 NA NA 329 248 283 315 ...
+ $ length          : num  160 182 232 201 NA ...
+ $ maximum_seating : int  5 5 6 5 NA NA 4 5 7 4 ...
+ $ owner_count     : int  0 0 0 1 0 0 1 0 1 1 ...
+ $ price_nom       : Factor w/ 2 levels "low","high": 1 1 1 1 1 1 2 2 1 1 ...</code></pre>
+</div>
+</div>
+</section>
+<section id="classification-tree" class="level2">
+<h2 class="anchored" data-anchor-id="classification-tree">2. Classification Tree</h2>
+<section id="the-tree" class="level3">
+<h3 class="anchored" data-anchor-id="the-tree">2.1 The Tree</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb165"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb165-1"><a href="#cb165-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(train_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "fleet"            "frame_damaged"    "franchise_dealer" "has_accidents"   
+ [5] "is_cpo"           "is_new"           "is_oemcpo"        "salvage"         
+ [9] "theft_title"      "back_legroom"     "fuel_tank_volume" "height"          
+[13] "horsepower"       "length"           "maximum_seating"  "owner_count"     
+[17] "price_nom"       </code></pre>
+</div>
+</div>
+<p><strong>class_tr</strong> is what we used to create a classification decision tree model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb167"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb167-1"><a href="#cb167-1" aria-hidden="true" tabindex="-1"></a>class_tr <span class="ot">&lt;-</span> <span class="fu">rpart</span>(price_nom <span class="sc">~</span>., <span class="at">data =</span> train_class, <span class="at">method =</span> <span class="st">"class"</span>,</span>
+<span id="cb167-2"><a href="#cb167-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">maxdepth =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb168"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb168-1"><a href="#cb168-1" aria-hidden="true" tabindex="-1"></a><span class="fu">prp</span>(class_tr, <span class="at">cex =</span> <span class="fl">0.8</span>, <span class="at">tweak =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Project_1_Final_files/figure-html/unnamed-chunk-78-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="model-evaluation-2" class="level2">
+<h2 class="anchored" data-anchor-id="model-evaluation-2">3. Model Evaluation</h2>
+<section id="confusionmatrix" class="level3">
+<h3 class="anchored" data-anchor-id="confusionmatrix">3.1 ConfusionMatrix</h3>
+<section id="a.-training-set" class="level4">
+<h4 class="anchored" data-anchor-id="a.-training-set">A. Training Set</h4>
+<p><strong>Class_tr_train_predict</strong> is the data frame on the training data using the previously created classification decision tree model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb169"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb169-1"><a href="#cb169-1" aria-hidden="true" tabindex="-1"></a>class_tr_train_predict <span class="ot">&lt;-</span> <span class="fu">predict</span>(class_tr, train_class,</span>
+<span id="cb169-2"><a href="#cb169-2" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">type =</span> <span class="st">"class"</span>)</span>
+<span id="cb169-3"><a href="#cb169-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb169-4"><a href="#cb169-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(class_tr_train_predict)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  low  high 
+18659  1804 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb171"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb171-1"><a href="#cb171-1" aria-hidden="true" tabindex="-1"></a><span class="co"># In this case, we have the data imbalance</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Here we used data imbalance.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb172"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb172-1"><a href="#cb172-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confusionMatrix</span>(class_tr_train_predict, train_class<span class="sc">$</span>price_nom)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Confusion Matrix and Statistics
+
+          Reference
+Prediction   low  high
+      low  17384  1275
+      high   538  1266
+                                          
+               Accuracy : 0.9114          
+                 95% CI : (0.9074, 0.9153)
+    No Information Rate : 0.8758          
+    P-Value [Acc &gt; NIR] : &lt; 2.2e-16       
+                                          
+                  Kappa : 0.5348          
+                                          
+ Mcnemar's Test P-Value : &lt; 2.2e-16       
+                                          
+            Sensitivity : 0.9700          
+            Specificity : 0.4982          
+         Pos Pred Value : 0.9317          
+         Neg Pred Value : 0.7018          
+             Prevalence : 0.8758          
+         Detection Rate : 0.8495          
+   Detection Prevalence : 0.9118          
+      Balanced Accuracy : 0.7341          
+                                          
+       'Positive' Class : low             
+                                          </code></pre>
+</div>
+</div>
+</section>
+<section id="b.-validation-set" class="level4">
+<h4 class="anchored" data-anchor-id="b.-validation-set">B. Validation Set</h4>
+<p><strong>class_tr_valid_predict</strong> is the data frame on the validation data using the previously created classification decision tree model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb174"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb174-1"><a href="#cb174-1" aria-hidden="true" tabindex="-1"></a>class_tr_valid_predict <span class="ot">&lt;-</span> <span class="fu">predict</span>(class_tr, valid_class,</span>
+<span id="cb174-2"><a href="#cb174-2" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">type =</span> <span class="st">"class"</span>)</span>
+<span id="cb174-3"><a href="#cb174-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(class_tr_valid_predict)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> low high 
+7997  773 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb176"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb176-1"><a href="#cb176-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confusionMatrix</span>(class_tr_valid_predict, valid_class<span class="sc">$</span>price_nom)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Confusion Matrix and Statistics
+
+          Reference
+Prediction  low high
+      low  7422  575
+      high  231  542
+                                          
+               Accuracy : 0.9081          
+                 95% CI : (0.9019, 0.9141)
+    No Information Rate : 0.8726          
+    P-Value [Acc &gt; NIR] : &lt; 2.2e-16       
+                                          
+                  Kappa : 0.5239          
+                                          
+ Mcnemar's Test P-Value : &lt; 2.2e-16       
+                                          
+            Sensitivity : 0.9698          
+            Specificity : 0.4852          
+         Pos Pred Value : 0.9281          
+         Neg Pred Value : 0.7012          
+             Prevalence : 0.8726          
+         Detection Rate : 0.8463          
+   Detection Prevalence : 0.9119          
+      Balanced Accuracy : 0.7275          
+                                          
+       'Positive' Class : low             
+                                          </code></pre>
+</div>
+</div>
+</section>
+<section id="c.-model-evaluation" class="level4">
+<h4 class="anchored" data-anchor-id="c.-model-evaluation">C. Model Evaluation</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb178"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb178-1"><a href="#cb178-1" aria-hidden="true" tabindex="-1"></a>ROSE<span class="sc">::</span><span class="fu">roc.curve</span>(valid_class<span class="sc">$</span>price_nom, class_tr_valid_predict)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Project_1_Final_files/figure-html/unnamed-chunk-83-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Area under the curve (AUC): 0.728</code></pre>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="weighted-sampling" class="level2">
+<h2 class="anchored" data-anchor-id="weighted-sampling">4. Weighted Sampling</h2>
+<p>The purpose of the ROSE package is to generate new synthetic examples. Since our data is imbalanced we need to increase the accuracy. So using our weighted sampling methods we learned, we were able to make the data more accurate.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb180"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb180-1"><a href="#cb180-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ROSE)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb181"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb181-1"><a href="#cb181-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(train_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "fleet"            "frame_damaged"    "franchise_dealer" "has_accidents"   
+ [5] "is_cpo"           "is_new"           "is_oemcpo"        "salvage"         
+ [9] "theft_title"      "back_legroom"     "fuel_tank_volume" "height"          
+[13] "horsepower"       "length"           "maximum_seating"  "owner_count"     
+[17] "price_nom"       </code></pre>
+</div>
+</div>
+<p>Before the factor</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb183"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb183-1"><a href="#cb183-1" aria-hidden="true" tabindex="-1"></a><span class="co"># train_class before the factor</span></span>
+<span id="cb183-2"><a href="#cb183-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(train_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   20463 obs. of  17 variables:
+ $ fleet           : chr  "True" "" "" "True" ...
+ $ frame_damaged   : chr  "False" "" "" "False" ...
+ $ franchise_dealer: chr  "True" "True" "True" "True" ...
+ $ has_accidents   : chr  "False" "" "" "False" ...
+ $ is_cpo          : chr  "False" "False" "False" "False" ...
+ $ is_new          : chr  "False" "True" "True" "False" ...
+ $ is_oemcpo       : chr  "False" "False" "False" "False" ...
+ $ salvage         : chr  "False" "" "" "False" ...
+ $ theft_title     : chr  "False" "" "" "False" ...
+ $ back_legroom    : num  41.5 38.6 NA 39.8 36.3 34.8 39 38.5 37.2 34.5 ...
+ $ fuel_tank_volume: num  23.3 24.6 NA 18.5 21 17.7 19.2 15.3 15.9 18 ...
+ $ height          : num  76.6 69.3 NA 58.9 65.7 63.9 69.9 66.1 67.1 71.8 ...
+ $ horsepower      : int  375 295 NA 305 308 240 300 166 176 270 ...
+ $ length          : num  210 190 NA 201 190 ...
+ $ maximum_seating : int  8 5 NA 5 5 5 7 5 5 5 ...
+ $ owner_count     : int  1 0 0 1 2 2 0 1 1 0 ...
+ $ price_nom       : Factor w/ 2 levels "low","high": 2 1 1 1 1 1 2 1 1 1 ...</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb185"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb185-1"><a href="#cb185-1" aria-hidden="true" tabindex="-1"></a>train_class<span class="sc">$</span>fleet <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(train_class<span class="sc">$</span>fleet)</span>
+<span id="cb185-2"><a href="#cb185-2" aria-hidden="true" tabindex="-1"></a>train_class<span class="sc">$</span>frame_damaged <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(train_class<span class="sc">$</span>frame_damaged)</span>
+<span id="cb185-3"><a href="#cb185-3" aria-hidden="true" tabindex="-1"></a>train_class<span class="sc">$</span>franchise_dealer <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(train_class<span class="sc">$</span>franchise_dealer)</span>
+<span id="cb185-4"><a href="#cb185-4" aria-hidden="true" tabindex="-1"></a>train_class<span class="sc">$</span>has_accidents <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(train_class<span class="sc">$</span>has_accidents)</span>
+<span id="cb185-5"><a href="#cb185-5" aria-hidden="true" tabindex="-1"></a>train_class<span class="sc">$</span>is_cpo <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(train_class<span class="sc">$</span>is_cpo)</span>
+<span id="cb185-6"><a href="#cb185-6" aria-hidden="true" tabindex="-1"></a>train_class<span class="sc">$</span>is_new <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(train_class<span class="sc">$</span>is_new)</span>
+<span id="cb185-7"><a href="#cb185-7" aria-hidden="true" tabindex="-1"></a>train_class<span class="sc">$</span>is_oemcpo <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(train_class<span class="sc">$</span>is_oemcpo)</span>
+<span id="cb185-8"><a href="#cb185-8" aria-hidden="true" tabindex="-1"></a>train_class<span class="sc">$</span>salvage <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(train_class<span class="sc">$</span>salvage)</span>
+<span id="cb185-9"><a href="#cb185-9" aria-hidden="true" tabindex="-1"></a>train_class<span class="sc">$</span>theft_title <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(train_class<span class="sc">$</span>theft_title)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>After the factor</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb186"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb186-1"><a href="#cb186-1" aria-hidden="true" tabindex="-1"></a><span class="co"># train_class after the factor</span></span>
+<span id="cb186-2"><a href="#cb186-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(train_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   20463 obs. of  17 variables:
+ $ fleet           : Factor w/ 3 levels "","False","True": 3 1 1 3 2 2 1 2 2 1 ...
+ $ frame_damaged   : Factor w/ 3 levels "","False","True": 2 1 1 2 2 2 1 2 2 1 ...
+ $ franchise_dealer: Factor w/ 2 levels "False","True": 2 2 2 2 1 2 2 1 2 2 ...
+ $ has_accidents   : Factor w/ 3 levels "","False","True": 2 1 1 2 2 2 1 2 2 1 ...
+ $ is_cpo          : Factor w/ 2 levels "False","True": 1 1 1 1 1 2 1 1 1 1 ...
+ $ is_new          : Factor w/ 2 levels "False","True": 1 2 2 1 1 1 2 1 1 2 ...
+ $ is_oemcpo       : Factor w/ 2 levels "False","True": 1 1 1 1 1 1 1 1 1 1 ...
+ $ salvage         : Factor w/ 3 levels "","False","True": 2 1 1 2 2 2 1 2 2 1 ...
+ $ theft_title     : Factor w/ 3 levels "","False","True": 2 1 1 2 2 2 1 2 2 1 ...
+ $ back_legroom    : num  41.5 38.6 NA 39.8 36.3 34.8 39 38.5 37.2 34.5 ...
+ $ fuel_tank_volume: num  23.3 24.6 NA 18.5 21 17.7 19.2 15.3 15.9 18 ...
+ $ height          : num  76.6 69.3 NA 58.9 65.7 63.9 69.9 66.1 67.1 71.8 ...
+ $ horsepower      : int  375 295 NA 305 308 240 300 166 176 270 ...
+ $ length          : num  210 190 NA 201 190 ...
+ $ maximum_seating : int  8 5 NA 5 5 5 7 5 5 5 ...
+ $ owner_count     : int  1 0 0 1 2 2 0 1 1 0 ...
+ $ price_nom       : Factor w/ 2 levels "low","high": 2 1 1 1 1 1 2 1 1 1 ...</code></pre>
+</div>
+</div>
+<p>Before the factor for validation set.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb188"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb188-1"><a href="#cb188-1" aria-hidden="true" tabindex="-1"></a><span class="co"># valid_class before the factor</span></span>
+<span id="cb188-2"><a href="#cb188-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(valid_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   8770 obs. of  17 variables:
+ $ fleet           : chr  "" "" "False" "True" ...
+ $ frame_damaged   : chr  "" "" "False" "False" ...
+ $ franchise_dealer: chr  "True" "True" "True" "True" ...
+ $ has_accidents   : chr  "" "" "False" "False" ...
+ $ is_cpo          : chr  "False" "False" "False" "False" ...
+ $ is_new          : chr  "True" "True" "True" "False" ...
+ $ is_oemcpo       : chr  "False" "False" "False" "False" ...
+ $ salvage         : chr  "" "" "False" "False" ...
+ $ theft_title     : chr  "" "" "False" "False" ...
+ $ back_legroom    : num  34.6 40.4 43.6 39.8 NA NA 34.1 37.8 36.5 29.8 ...
+ $ fuel_tank_volume: num  12.2 14 26 18.5 NA NA 17.4 18.5 20 16 ...
+ $ height          : num  59.7 66.5 77.2 58.9 NA NA 56.2 65.3 69 56.1 ...
+ $ horsepower      : int  138 190 375 305 NA NA 329 248 283 315 ...
+ $ length          : num  160 182 232 201 NA ...
+ $ maximum_seating : int  5 5 6 5 NA NA 4 5 7 4 ...
+ $ owner_count     : int  0 0 0 1 0 0 1 0 1 1 ...
+ $ price_nom       : Factor w/ 2 levels "low","high": 1 1 1 1 1 1 2 2 1 1 ...</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb190"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb190-1"><a href="#cb190-1" aria-hidden="true" tabindex="-1"></a>valid_class<span class="sc">$</span>fleet <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(valid_class<span class="sc">$</span>fleet)</span>
+<span id="cb190-2"><a href="#cb190-2" aria-hidden="true" tabindex="-1"></a>valid_class<span class="sc">$</span>frame_damaged <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(valid_class<span class="sc">$</span>frame_damaged)</span>
+<span id="cb190-3"><a href="#cb190-3" aria-hidden="true" tabindex="-1"></a>valid_class<span class="sc">$</span>franchise_dealer <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(valid_class<span class="sc">$</span>franchise_dealer)</span>
+<span id="cb190-4"><a href="#cb190-4" aria-hidden="true" tabindex="-1"></a>valid_class<span class="sc">$</span>has_accidents <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(valid_class<span class="sc">$</span>has_accidents)</span>
+<span id="cb190-5"><a href="#cb190-5" aria-hidden="true" tabindex="-1"></a>valid_class<span class="sc">$</span>is_cpo <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(valid_class<span class="sc">$</span>is_cpo)</span>
+<span id="cb190-6"><a href="#cb190-6" aria-hidden="true" tabindex="-1"></a>valid_class<span class="sc">$</span>is_new <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(valid_class<span class="sc">$</span>is_new)</span>
+<span id="cb190-7"><a href="#cb190-7" aria-hidden="true" tabindex="-1"></a>valid_class<span class="sc">$</span>is_oemcpo <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(valid_class<span class="sc">$</span>is_oemcpo)</span>
+<span id="cb190-8"><a href="#cb190-8" aria-hidden="true" tabindex="-1"></a>valid_class<span class="sc">$</span>salvage <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(valid_class<span class="sc">$</span>salvage)</span>
+<span id="cb190-9"><a href="#cb190-9" aria-hidden="true" tabindex="-1"></a>valid_class<span class="sc">$</span>theft_title <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(valid_class<span class="sc">$</span>theft_title)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>After the factor for validation set.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb191"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb191-1"><a href="#cb191-1" aria-hidden="true" tabindex="-1"></a><span class="co"># valid_class after the factor</span></span>
+<span id="cb191-2"><a href="#cb191-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(valid_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   8770 obs. of  17 variables:
+ $ fleet           : Factor w/ 3 levels "","False","True": 1 1 2 3 1 1 2 1 3 2 ...
+ $ frame_damaged   : Factor w/ 3 levels "","False","True": 1 1 2 2 1 1 2 1 2 2 ...
+ $ franchise_dealer: Factor w/ 2 levels "False","True": 2 2 2 2 2 2 1 2 1 2 ...
+ $ has_accidents   : Factor w/ 3 levels "","False","True": 1 1 2 2 1 1 2 1 2 2 ...
+ $ is_cpo          : Factor w/ 2 levels "False","True": 1 1 1 1 1 1 1 1 1 1 ...
+ $ is_new          : Factor w/ 2 levels "False","True": 2 2 2 1 2 2 1 2 1 1 ...
+ $ is_oemcpo       : Factor w/ 2 levels "False","True": 1 1 1 1 1 1 1 1 1 1 ...
+ $ salvage         : Factor w/ 3 levels "","False","True": 1 1 2 2 1 1 2 1 2 2 ...
+ $ theft_title     : Factor w/ 3 levels "","False","True": 1 1 2 2 1 1 2 1 2 2 ...
+ $ back_legroom    : num  34.6 40.4 43.6 39.8 NA NA 34.1 37.8 36.5 29.8 ...
+ $ fuel_tank_volume: num  12.2 14 26 18.5 NA NA 17.4 18.5 20 16 ...
+ $ height          : num  59.7 66.5 77.2 58.9 NA NA 56.2 65.3 69 56.1 ...
+ $ horsepower      : int  138 190 375 305 NA NA 329 248 283 315 ...
+ $ length          : num  160 182 232 201 NA ...
+ $ maximum_seating : int  5 5 6 5 NA NA 4 5 7 4 ...
+ $ owner_count     : int  0 0 0 1 0 0 1 0 1 1 ...
+ $ price_nom       : Factor w/ 2 levels "low","high": 1 1 1 1 1 1 2 2 1 1 ...</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb193"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb193-1"><a href="#cb193-1" aria-hidden="true" tabindex="-1"></a>train_class_df_rose <span class="ot">&lt;-</span> <span class="fu">ROSE</span>(price_nom <span class="sc">~</span>., <span class="at">data =</span> train_class,</span>
+<span id="cb193-2"><a href="#cb193-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">seed =</span> <span class="dv">666</span>)<span class="sc">$</span>data</span>
+<span id="cb193-3"><a href="#cb193-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb193-4"><a href="#cb193-4" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(train_class_df_rose<span class="sc">$</span>price_nom)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ low high 
+9265 9484 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb195"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb195-1"><a href="#cb195-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Now we have balance data and ready for the tree</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now we have balanced data and we are ready for the tree.</p>
+</section>
+<section id="weighted-data-decision-tree" class="level2">
+<h2 class="anchored" data-anchor-id="weighted-data-decision-tree">5. Weighted Data Decision Tree</h2>
+<p><strong>class_tr_2</strong> is used to create a 2nd classification decision tree model for the balance data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb196"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb196-1"><a href="#cb196-1" aria-hidden="true" tabindex="-1"></a>class_tr_2 <span class="ot">&lt;-</span> <span class="fu">rpart</span>(price_nom <span class="sc">~</span>., <span class="at">data =</span> train_class_df_rose,</span>
+<span id="cb196-2"><a href="#cb196-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">method =</span> <span class="st">"class"</span>,</span>
+<span id="cb196-3"><a href="#cb196-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">maxdepth =</span> <span class="dv">10</span>)</span>
+<span id="cb196-4"><a href="#cb196-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb196-5"><a href="#cb196-5" aria-hidden="true" tabindex="-1"></a><span class="fu">rpart.plot</span>(class_tr_2, <span class="at">type =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Project_1_Final_files/figure-html/unnamed-chunk-93-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<section id="predict-training-set-1" class="level3">
+<h3 class="anchored" data-anchor-id="predict-training-set-1">5.1 Predict Training Set</h3>
+<p><strong>class_tr_2_train_class_predict</strong> is the 2nd predictions data frame on the training data using the previously created classification decision tree model for the balance data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb197"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb197-1"><a href="#cb197-1" aria-hidden="true" tabindex="-1"></a>class_tr_2_train_class_predict <span class="ot">&lt;-</span> <span class="fu">predict</span>(class_tr_2, train_class_df_rose,</span>
+<span id="cb197-2"><a href="#cb197-2" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">type =</span> <span class="st">"class"</span>)</span>
+<span id="cb197-3"><a href="#cb197-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(class_tr_2_train_class_predict)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> low high 
+8791 9958 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb199"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb199-1"><a href="#cb199-1" aria-hidden="true" tabindex="-1"></a>class_tr_2_train_class_predict <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(class_tr_2_train_class_predict)</span>
+<span id="cb199-2"><a href="#cb199-2" aria-hidden="true" tabindex="-1"></a>train_class_df_rose<span class="sc">$</span>price_nom <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(train_class_df_rose<span class="sc">$</span>price_nom)</span>
+<span id="cb199-3"><a href="#cb199-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb199-4"><a href="#cb199-4" aria-hidden="true" tabindex="-1"></a><span class="fu">confusionMatrix</span>(class_tr_2_train_class_predict, train_class_df_rose<span class="sc">$</span>price_nom)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Confusion Matrix and Statistics
+
+          Reference
+Prediction  low high
+      low  7682 1109
+      high 1583 8375
+                                          
+               Accuracy : 0.8564          
+                 95% CI : (0.8513, 0.8614)
+    No Information Rate : 0.5058          
+    P-Value [Acc &gt; NIR] : &lt; 2.2e-16       
+                                          
+                  Kappa : 0.7126          
+                                          
+ Mcnemar's Test P-Value : &lt; 2.2e-16       
+                                          
+            Sensitivity : 0.8291          
+            Specificity : 0.8831          
+         Pos Pred Value : 0.8738          
+         Neg Pred Value : 0.8410          
+             Prevalence : 0.4942          
+         Detection Rate : 0.4097          
+   Detection Prevalence : 0.4689          
+      Balanced Accuracy : 0.8561          
+                                          
+       'Positive' Class : low             
+                                          </code></pre>
+</div>
+</div>
+</section>
+<section id="predict-validation-set-1" class="level3">
+<h3 class="anchored" data-anchor-id="predict-validation-set-1">5.2 Predict Validation Set</h3>
+<p><strong>class_tr_2_valid_class_predict</strong> is the 2nd predictions data frame on the validation data using the previously created classification decision tree model for the balance data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb201"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb201-1"><a href="#cb201-1" aria-hidden="true" tabindex="-1"></a>class_tr_2_valid_class_predict <span class="ot">&lt;-</span> <span class="fu">predict</span>(class_tr_2, valid_class,</span>
+<span id="cb201-2"><a href="#cb201-2" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">type =</span> <span class="st">"class"</span>)</span>
+<span id="cb201-3"><a href="#cb201-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(class_tr_2_valid_class_predict)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> low high 
+5983 2787 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb203"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb203-1"><a href="#cb203-1" aria-hidden="true" tabindex="-1"></a>class_tr_2_valid_class_predict <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(class_tr_2_valid_class_predict)</span>
+<span id="cb203-2"><a href="#cb203-2" aria-hidden="true" tabindex="-1"></a>valid_class<span class="sc">$</span>price_nom <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(valid_class<span class="sc">$</span>price_nom)</span>
+<span id="cb203-3"><a href="#cb203-3" aria-hidden="true" tabindex="-1"></a><span class="fu">confusionMatrix</span>(class_tr_2_valid_class_predict, valid_class<span class="sc">$</span>price_nom)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Confusion Matrix and Statistics
+
+          Reference
+Prediction  low high
+      low  5893   90
+      high 1760 1027
+                                          
+               Accuracy : 0.7891          
+                 95% CI : (0.7804, 0.7976)
+    No Information Rate : 0.8726          
+    P-Value [Acc &gt; NIR] : 1               
+                                          
+                  Kappa : 0.4208          
+                                          
+ Mcnemar's Test P-Value : &lt;2e-16          
+                                          
+            Sensitivity : 0.7700          
+            Specificity : 0.9194          
+         Pos Pred Value : 0.9850          
+         Neg Pred Value : 0.3685          
+             Prevalence : 0.8726          
+         Detection Rate : 0.6719          
+   Detection Prevalence : 0.6822          
+      Balanced Accuracy : 0.8447          
+                                          
+       'Positive' Class : low             
+                                          </code></pre>
+</div>
+</div>
+</section>
+<section id="model-evaluation-3" class="level3">
+<h3 class="anchored" data-anchor-id="model-evaluation-3">5.3 Model Evaluation</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb205"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb205-1"><a href="#cb205-1" aria-hidden="true" tabindex="-1"></a>ROSE<span class="sc">::</span><span class="fu">roc.curve</span>(valid_class<span class="sc">$</span>price_nom, class_tr_2_valid_class_predict)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Project_1_Final_files/figure-html/unnamed-chunk-98-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Area under the curve (AUC): 0.845</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="predict-new-record" class="level2">
+<h2 class="anchored" data-anchor-id="predict-new-record">6. Predict New Record</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb207"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb207-1"><a href="#cb207-1" aria-hidden="true" tabindex="-1"></a>car_test_class_tr <span class="ot">&lt;-</span> car_test</span>
+<span id="cb207-2"><a href="#cb207-2" aria-hidden="true" tabindex="-1"></a>car_test_class_tr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  fleet frame_damaged franchise_dealer has_accidents is_cpo is_new is_oemcpo
+1                                 True                False   True     False
+2 False         False            False          True  False  False     False
+3                                 True                False   True     False
+4 False         False             True         False  False  False     False
+5 False         False             True         False  False  False     False
+6 False         False             True         False  False  False     False
+  salvage theft_title back_legroom fuel_tank_volume height horsepower length
+1                             43.4             24.0   75.5        355  231.7
+2   False       False         36.8             18.5   57.6        197  191.5
+3                             43.6             26.0   77.2        375  231.9
+4   False       False         38.0             15.8   57.5        310  197.5
+5   False       False         38.3             18.5   57.9        158  189.2
+6   False       False         38.4             24.6   70.7        302  189.7
+  maximum_seating owner_count
+1               5           0
+2               5           2
+3               6           0
+4               5           1
+5               5           1
+6               5           1</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb209"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb209-1"><a href="#cb209-1" aria-hidden="true" tabindex="-1"></a>car_test_predict_class_tr <span class="ot">&lt;-</span> <span class="fu">predict</span>(class_tr_2, <span class="at">newdata =</span> car_test_class_tr,</span>
+<span id="cb209-2"><a href="#cb209-2" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">type =</span> <span class="st">"class"</span>)</span>
+<span id="cb209-3"><a href="#cb209-3" aria-hidden="true" tabindex="-1"></a>car_test_predict_class_tr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   1    2    3    4    5    6 
+high  low high  low  low  low 
+Levels: low high</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="iv.-best-model" class="level1">
+<h1>IV. Best model:</h1>
+<p>We used two models in our project to understand which we should use to determine what will help Mator understand how to set a price to a car. We used a kNN Model and a Classification tree. Using a kNN model is the most popular when it comes to machine learning since it can be used for both classification and regression tasks. But the purpose of the classification tree is to easily interpretable and handle nonlinear relationships.</p>
+<p>I can see that the model Classification Tree has the highest accuracy of both training and validation set it means that the classification tree model is the best model compare to the others.</p>
+<section id="overfitting" class="level2">
+<h2 class="anchored" data-anchor-id="overfitting">Overfitting</h2>
+<p>We have no over fitting in our data. This is because when comparing the model’s performance on the training data versus its performance on the test data set, a significant difference was not present.</p>
+<section id="knn-model-1" class="level3">
+<h3 class="anchored" data-anchor-id="knn-model-1">kNN model</h3>
+<p>The accuracy of the training set: 0.7111 = 71.11% -&gt; Bad</p>
+<p>The accuracy of the validation set: 0.5964 = 59.64% -&gt; Bad</p>
+<p>Area under the curve (AUC): 0.680 -&gt; Bad</p>
+</section>
+<section id="decision-tree-model" class="level3">
+<h3 class="anchored" data-anchor-id="decision-tree-model">Decision Tree model</h3>
+<p>The accuracy of the training set: 0.8564 = 85.64% -&gt; Good</p>
+<p>The accuracy of the validation set: 0.7891 = 78.91% -&gt; Good</p>
+<p>Area under the curve (AUC): 0.845 -&gt; Good</p>
+<p>=&gt; We will use the classification tree model to predict the car test price</p>
+<p>We are using the classification tree model because as you can see from above the accuracy for our training, validation and area under the curve is much higher for the decision tree model. Because we see the percentage of the training and validation set is more near to 100% than the kNN model. We know that having a percentage above 80% is accurate. When the AUC is near to 1, that means it would be more accurate. In our case the decision tree AUC is closer to 1 than the kNN model.</p>
+</section>
+</section>
+</section>
+<section id="v.-predict-new-record-based-on-best-model" class="level1">
+<h1>V. Predict New Record Based on Best Model</h1>
+<p>We will use the Decision Tree model to predict the new used car price because of the previous information. Here are the prediction of 6 used cars that Mator need help to predict:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb211"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb211-1"><a href="#cb211-1" aria-hidden="true" tabindex="-1"></a>car_test_predict_class_tr <span class="ot">&lt;-</span> <span class="fu">predict</span>(class_tr_2, <span class="at">newdata =</span> car_test_class_tr,</span>
+<span id="cb211-2"><a href="#cb211-2" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">type =</span> <span class="st">"class"</span>)</span>
+<span id="cb211-3"><a href="#cb211-3" aria-hidden="true" tabindex="-1"></a>car_test_predict_class_tr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   1    2    3    4    5    6 
+high  low high  low  low  low 
+Levels: low high</code></pre>
+</div>
+</div>
+<p>Solution for predicting new used car price for Mator:</p>
+<ul>
+<li><p>Car #1: High price</p></li>
+<li><p>Car #2: Low price</p></li>
+<li><p>Car #3: High price</p></li>
+<li><p>Car #4: Low price</p></li>
+<li><p>Car #5: Low price</p></li>
+<li><p>Car #6: Low price</p></li>
+</ul>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
