@@ -1,0 +1,879 @@
+---
+title: "Project 1"
+format: html
+editor: visual
+---
+
+# Brief Problem Description:
+
+Lightning McQueen is lost. He is now in Radiator Springs where he found a new home. He met Mator, a new friend of his, and Mator wants to start a new used car resale business. But Mator does not know how to set a price to a car. But Mator has received an incomplete data set about used car sales. Mator reached out to us; Marcus, Tai, and Simon because he heard we are some of the best business analytics students at Seattle University.
+
+# Objective:
+
+Mator is asking us to use our expertise to predict whether a used car price should be high or low.
+
+# Data Set:
+
+As scholars at the Albers school of business we see some issues with this incomplete data set. We say the data set is incomplete because it does not have exact prices. Instead we will use high vs low to determine how to set the price (presumably based on prevailing market rates) and market used cars. High priced ones will be marketed differently from low priced ones. While the price for some used cars are obvious, others are not. From the data set we will build and select an appropriate model for the company and predict the price of the car if it would be higher or lower for a new customer.
+
+The reason we choose the positive to be low is because the description of our assignment it states that normally this data is set to the minority class. Which in this case is the low price norm.
+
+```{r}
+library(caret)
+library(ggplot2)
+library(lattice)
+library(dplyr)
+library(tidyverse)
+library(rpart)
+library(rpart.plot)
+library(forecast)
+```
+
+# I. Data
+
+## 1. Clean the Data
+
+We need to clean the data to get it ready for analysis.
+
+```{r}
+cars <- read.csv("car_train_class_12.csv", header = TRUE)
+head(cars, 10)
+```
+
+```{r}
+str(cars)
+```
+
+```{r}
+t(t(names(cars)))
+```
+
+We removed unnecessary variables here. We did this because we wanted to choose the quality variables to give us a model that could predict the correct accuracy. So we can have the right business evaluation.
+
+```{r}
+#Remove unnecessary variables
+cars <- cars[, c(4,14:16,19,21:23,25:28,34,37,39,44,59)]
+t(t(names(cars)))
+```
+
+```{r}
+str(cars)
+```
+
+```{r}
+#reorder the data frame
+cars <- cars[, c(2:4,6,9:11,15:16,1,5,7:8,12:14,17)] 
+str(cars)
+```
+
+## 2. Data for kNN model
+
+Next we get the data ready for kNN model. We will need to drop all the NAs variables inside the data frame.
+
+```{r}
+cars_kNN <- drop_na(cars) 
+# this code drop all the NA variable inside the data frame
+
+head(cars_kNN, 10)
+```
+
+```{r}
+str(cars_kNN)
+```
+
+Here we set our categorical variables as factors because these columns have 2 or more classes.
+
+**Cars_kNN** will be our data frame for the test of the cars.
+
+```{r}
+# Set categorical variables as factor because columns have more than 2 classes
+
+cars_kNN$fleet <- as.factor(cars_kNN$fleet)
+cars_kNN$frame_damaged <- as.factor(cars_kNN$frame_damaged)
+cars_kNN$franchise_dealer <- as.factor(cars_kNN$franchise_dealer)
+cars_kNN$has_accidents <- as.factor(cars_kNN$has_accidents)
+cars_kNN$is_cpo <- as.factor(cars_kNN$is_cpo)
+cars_kNN$is_new <- as.factor(cars_kNN$is_new)
+cars_kNN$is_oemcpo <- as.factor(cars_kNN$is_oemcpo)
+cars_kNN$salvage <- as.factor(cars_kNN$salvage)
+cars_kNN$theft_title <- as.factor(cars_kNN$theft_title)
+
+str(cars_kNN)
+```
+
+```{r}
+cars_kNN$price_nom <- factor(cars_kNN$price_nom,
+                             levels = c('0', '1'),
+                             labels = c('low', 'high'))
+
+head(cars_kNN)
+table(cars_kNN$price_nom)
+```
+
+```{r}
+str(cars_kNN)
+```
+
+## 3. Car Test data
+
+Now we need to get our car test data uploaded and ready to compare.
+
+```{r}
+car_test <- read.csv("car_test_12.csv", header = TRUE)
+names(car_test)
+```
+
+```{r}
+car_test <- car_test[, c(13:15,20,24:26,38,43,3,18,21,22,27,33,36)]
+names(car_test)
+str(car_test)
+```
+
+# II. kNN model
+
+## 1. Car Test data frame
+
+### 1.1 Prepare the Car Test data for kNN
+
+```{r}
+# we will normalize the data frame for the test of the cars for the kNN model
+car_test_kNN <- car_test
+```
+
+```{r}
+car_test_kNN$fleet <- as.factor(car_test_kNN$fleet)
+car_test_kNN$frame_damaged <- as.factor(car_test_kNN$frame_damaged)
+car_test_kNN$franchise_dealer <- as.factor(car_test_kNN$franchise_dealer)
+car_test_kNN$has_accidents <- as.factor(car_test_kNN$has_accidents)
+car_test_kNN$is_cpo <- as.factor(car_test_kNN$is_cpo)
+car_test_kNN$is_new <- as.factor(car_test_kNN$is_new)
+car_test_kNN$is_oemcpo <- as.factor(car_test_kNN$is_oemcpo)
+car_test_kNN$salvage <- as.factor(car_test_kNN$salvage)
+car_test_kNN$theft_title <- as.factor(car_test_kNN$theft_title)
+
+str(car_test_kNN)
+```
+
+### 1.2 Levels of training data and new data
+
+#### A. Before the adding the levels to the new data
+
+```{r}
+str(car_test_kNN)
+
+# levels of each variables inside the new data
+```
+
+```{r}
+str(cars_kNN) 
+
+# levels of each variables inside the training data
+```
+
+```{r}
+levels(car_test_kNN$fleet)
+```
+
+```{r}
+levels(car_test_kNN$frame_damaged)
+```
+
+```{r}
+levels(car_test_kNN$is_cpo)
+```
+
+```{r}
+levels(car_test_kNN$is_oemcpo)
+```
+
+```{r}
+levels(car_test_kNN$salvage)
+```
+
+```{r}
+levels(car_test_kNN$theft_title)
+```
+
+#### B. After the adding the levels to the new data
+
+```{r}
+levels(car_test_kNN$fleet) <- levels(cars_kNN$fleet)
+levels(car_test_kNN$frame_damaged) <- levels(cars_kNN$frame_damaged)
+levels(car_test_kNN$is_cpo) <- levels(cars_kNN$is_cpo)
+levels(car_test_kNN$is_oemcpo) <- levels(cars_kNN$is_oemcpo)
+levels(car_test_kNN$salvage) <- levels(cars_kNN$salvage)
+levels(car_test_kNN$theft_title) <- levels(cars_kNN$theft_title)
+
+head(car_test_kNN)
+```
+
+```{r}
+str(cars_kNN)
+```
+
+```{r}
+str(car_test_kNN)
+```
+
+## 2. Prepare for the kNN
+
+Here we set our training and validation sets for the KNN Model:
+
+**training_index_kNN** will be the training index for the kNN Model.
+
+**valid_index_kNN** will be the validation index for the kNN Model.
+
+**train_kNN** will be the data frame for the training data for the kNN model after splitting.
+
+**valid_kNN** will be data frame for the validation data for the kNN model after splitting
+
+```{r}
+# Set training and validation sets for kNN model
+set.seed(666)
+
+train_index_kNN <- sample(1:nrow(cars_kNN), 0.6 * nrow(cars_kNN))
+valid_index_kNN <- setdiff(1:nrow(cars_kNN), train_index_kNN)
+
+train_kNN <- cars_kNN[train_index_kNN,]
+valid_kNN <- cars_kNN[valid_index_kNN,]
+```
+
+```{r}
+nrow(train_kNN)
+```
+
+```{r}
+nrow(valid_kNN)
+```
+
+**train_norm_kNN** will be the data frame for the normalization of the training data of the kNN model.
+
+**valid_norm_kNN** will be the data frame for the validation of the validation data of the kNN model
+
+```{r}
+train_norm_kNN <- train_kNN
+valid_norm_kNN <- valid_kNN
+
+t(t(names(cars_kNN)))
+```
+
+```{r}
+str(train_kNN)
+```
+
+Here we will prepare the data for analysis by creating pre-process model. We also normalized the selected columns in the train_norm data set based on the transformations learned from the norm values model.
+
+**norm_values_kNN** will be the data frame that will prepare for the analysis for the kNN model.
+
+```{r}
+# preProcess: Prepare the data for the analysis / create preprocessing model
+norm_values_kNN <- preProcess(train_kNN[, -c(1:9,17)],
+                          method = c("center",
+                                     "scale"))
+
+# Normalize the selected columns in the train_norm dataset based on the transformations learned from "norm_values model"
+# predict(model, dataset)
+train_norm_kNN[, -c(1:9, 17)] <- predict(norm_values_kNN,
+                                      train_kNN[, -c(1:9, 17)])
+
+head(train_norm_kNN)
+```
+
+```{r}
+valid_norm_kNN[, -c(1:9, 17)] <- predict(norm_values_kNN,
+                                valid_kNN[, -c(1:9, 17)])
+
+head(valid_norm_kNN)
+```
+
+Next we need to normalize car test data.
+
+**car_test_norm_kNN** will be the data frame of the car test data frame that will be normalized for the kNN model.
+
+```{r}
+# Normalize Car Test data for kNN
+car_test_norm_kNN <- predict(norm_values_kNN, car_test_kNN)
+car_test_norm_kNN
+```
+
+## 3. kNN model
+
+### 3.1 k = 3
+
+#### A. The Training
+
+**kNN_model_k3** is the kNN model for k = 3.
+
+```{r}
+knn_model_k3 <- caret::knn3(price_nom ~.,
+                            data = train_norm_kNN, k = 3)
+knn_model_k3
+```
+
+#### B. The Prediction
+
+##### Prediction on training Set
+
+**kNN_pred_k3_train** will be the prediction for the training set for the kNN model for k = 3.
+
+```{r}
+knn_pred_k3_train <- predict(knn_model_k3, newdata = train_norm_kNN[, -c(17)],
+                             type = "class")
+head(knn_pred_k3_train)
+```
+
+```{r}
+confusionMatrix(knn_pred_k3_train, as.factor(train_norm_kNN[, 17]))
+```
+
+##### Prediction on Validation Set
+
+**kNN_pred_k3_valid** will be the prediction for the validation set for the kNN model for k = 3.
+
+```{r}
+knn_pred_k3_valid <- predict(knn_model_k3, newdata = valid_norm_kNN[, -c(17)],
+                             type = "class")
+head(knn_pred_k3_valid)
+```
+
+```{r}
+confusionMatrix(knn_pred_k3_valid, as.factor(valid_norm_kNN[, 17]))
+```
+
+##### \*\*\*Predicting the Car Test
+
+**car_test_predict_kNN_k3** will be the values of the car test prediction from kNN model with k = 3.
+
+```{r}
+car_test_predict_kNN_k3 <- predict(knn_model_k3,
+                            newdata = car_test_norm_kNN,
+                            type = "class")
+car_test_predict_kNN_k3
+```
+
+##### \*\*\*Probabilities
+
+```{r}
+knn_pred_k3_prob <- predict(knn_model_k3, newdata = valid_norm_kNN[, -c(17)],
+                            type = "prob")
+head(knn_pred_k3_prob)
+```
+
+### 3.2 k = 5
+
+#### A. The Training
+
+**kNN_model_k5** is kNN model for k = 5.
+
+```{r}
+knn_model_k5 <- caret::knn3(price_nom ~.,
+                            data = train_norm_kNN, k = 5)
+knn_model_k5
+```
+
+#### B. The Prediction
+
+##### Prediction on Training Set
+
+**kNN_pred_k5_train** is the prediction for the training set for the kNN model for k = 5.
+
+```{r}
+knn_pred_k5_train <- predict(knn_model_k5, newdata = train_norm_kNN[, -c(17)],
+                             type = "class")
+head(knn_pred_k5_train)
+```
+
+```{r}
+confusionMatrix(knn_pred_k5_train, as.factor(train_norm_kNN[, 17]))
+```
+
+##### Prediction on Validation Set
+
+**kNN_pred_k5_valid** is the prediction for the validation set for the kNN model for k = 5.
+
+```{r}
+knn_pred_k5_valid <- predict(knn_model_k5, newdata = valid_norm_kNN[, -c(17)],
+                             type = "class")
+head(knn_pred_k5_valid)
+```
+
+```{r}
+confusionMatrix(knn_pred_k5_valid, as.factor(valid_norm_kNN[, 17]))
+```
+
+##### \*\*\*Predicting the Car Test
+
+**car_test_predict_kNN_k5** will be the values of the car test prediction from kNN model with k = 5.
+
+```{r}
+car_test_predict_kNN_k5 <- predict(knn_model_k5,
+                            newdata = car_test_norm_kNN,
+                            type = "class")
+car_test_predict_kNN_k5
+```
+
+##### \*\*\*Probabilities
+
+```{r}
+knn_pred_k5_prob <- predict(knn_model_k5, newdata = valid_norm_kNN[, -c(17)],
+                            type = "prob")
+head(knn_pred_k5_prob)
+```
+
+## 4. Model Evaluation
+
+```{r}
+library(ROSE)
+```
+
+### 4.1 k = 3
+
+```{r}
+ROSE::roc.curve(valid_norm_kNN$price_nom, knn_pred_k3_valid)
+```
+
+### 4.2 k = 5
+
+```{r}
+ROSE::roc.curve(valid_norm_kNN$price_nom, knn_pred_k5_valid)
+```
+
+## 5. Weighted Data kNN
+
+**train_kNN_df_rose** is the data frame for the training data after balancing the data for the kNN model.
+
+```{r}
+train_kNN_df_rose <- ROSE(price_nom ~., data = train_kNN,
+                      seed = 666)$data
+
+table(train_kNN_df_rose$price_nom)
+
+```
+
+**train_norm_kNN_2** is the 2nd data frame for the normalization of the training data of the kNN model for the balance data.
+
+**valid_norm_kNN_2** is the 2nd data frame for the validation of the validation data of the kNN model for balance data.
+
+```{r}
+train_norm_kNN_2 <- train_kNN_df_rose
+valid_norm_kNN_2 <- valid_kNN
+```
+
+```{r}
+names(train_norm_kNN_2)
+```
+
+**norm_values_kNN_2** is the 2nd data frame that was prepared for the analysis for the kNN model for the balance data.
+
+```{r}
+norm_values_kNN_2 <- preProcess(train_kNN[, -c(1:9, 17)],
+                                method = c("center",
+                                           "scale"))
+
+train_norm_kNN_2[, -c(1:9, 17)] <- predict(norm_values_kNN_2,
+                                      train_kNN[, -c(1:9, 17)])
+head(train_norm_kNN_2)
+```
+
+```{r}
+valid_norm_kNN_2[, -c(1:9, 17)] <- predict(norm_values_kNN_2,
+                                      valid_kNN[, -c(1:9, 17)])
+head(valid_norm_kNN_2)
+```
+
+**knn_model_2** is the kNN model 2 for the balance data.
+
+```{r}
+knn_model_2 <- caret::knn3(price_nom ~ ., data = train_norm_kNN_2, k = 15)
+knn_model_2
+```
+
+#### 5.1 Predict training set
+
+**knn_pred_train_2** is the prediction for the training set for the kNN model 2.
+
+```{r}
+knn_pred_train_2 <- predict(knn_model_2, newdata = 
+                              train_norm_kNN_2[, -c(17)],
+                            type = "class")
+head(knn_pred_train_2)
+```
+
+```{r}
+confusionMatrix(knn_pred_train_2, as.factor(train_norm_kNN_2[, 17]),
+                positive = "low")
+```
+
+#### 5.2 Predict Validation set
+
+**knn_pred_valid_2** is the prediction for the validation set for the kNN model 2.
+
+```{r}
+knn_pred_valid_2 <- predict(knn_model_2,
+                            newdata = valid_norm_kNN_2[, -c(17)],
+                            type = "class")
+head(knn_pred_valid_2)
+```
+
+```{r}
+confusionMatrix(knn_pred_valid_2, as.factor(valid_norm_kNN_2[, 17]),
+                positive = "low")
+```
+
+#### 5.3 Model Evaluation
+
+```{r}
+ROSE::roc.curve(valid_norm_kNN_2$price_nom, knn_pred_valid_2)
+```
+
+#### \*\*\*Predicting the Car Test
+
+**car_test_predict_kNN_model_2** is the values of the car test prediction from kNN model 2.
+
+```{r}
+car_test_predict_kNN_model_2 <- predict(knn_model_2,
+                            newdata = car_test_norm_kNN,
+                            type = "class")
+car_test_predict_kNN_model_2
+```
+
+#### \*\*\*Probabilities
+
+```{r}
+knn_pred_model_2_prob <- predict(knn_model_2, newdata = valid_norm_kNN_2[, -c(17)],
+                                 type = "prob")
+head(knn_pred_model_2_prob)
+```
+
+### Conclusion About the Probabilities
+
+We can see that the probabilities for k = 3 and k = 5 is not balance and accurate due to the imbalance in the data but after we create a new model for kNN and balance the data, the probabilities has become more accurate. That means we can be sure that the weighted data is eligible to use to predict the outcome.
+
+# III. Classification Tree model
+
+## 1. Data for Classification Tree model
+
+Next we will create a classification tree. We use a classification tree to analyze both numerical and categorical data, while kNN can analyze only int and numerical data.
+
+**cars_class_tr** is the data frame for the Classification Tree model.
+
+```{r}
+cars_class_tr <- cars
+str(cars_class_tr)
+```
+
+```{r}
+cars_class_tr$price_nom <- factor(cars_class_tr$price_nom,
+                             levels = c('0', '1'),
+                             labels = c('low', 'high'))
+
+head(cars_class_tr)
+table(cars_class_tr$price_nom)
+
+```
+
+```{r}
+str(cars_class_tr)
+
+```
+
+Here we set the training and validation set for the classification tree model:
+
+**train_index_class_tr** is the training index for the Classification Tree model.
+
+**valid_index_class_tr** is the validation index for the Classification Tree model.
+
+**train_class** is the data frame for the training data for the Classification Tree model after splitting.
+
+**valid_class** is the data frame for the validation data for the Classification Tree model after splitting.
+
+```{r}
+# Set Training and Validation set for Classification Tree model
+
+set.seed(666)
+
+train_index_class_tr <- sample(1:nrow(cars_class_tr), 0.7 * nrow(cars_class_tr))
+valid_index_class_tr <- setdiff(1:nrow(cars_class_tr), train_index_class_tr)
+
+train_class <- cars_class_tr[train_index_class_tr,]
+valid_class <- cars_class_tr[valid_index_class_tr,]
+```
+
+```{r}
+nrow(train_class)
+```
+
+```{r}
+nrow(valid_class)
+```
+
+```{r}
+head(train_class,10)
+```
+
+```{r}
+head(valid_class, 10)
+```
+
+```{r}
+str(train_class)
+```
+
+```{r}
+str(valid_class)
+```
+
+## 2. Classification Tree
+
+### 2.1 The Tree
+
+```{r}
+names(train_class)
+```
+
+**class_tr** is what we used to create a classification decision tree model.
+
+```{r}
+class_tr <- rpart(price_nom ~., data = train_class, method = "class",
+                  maxdepth = 5)
+```
+
+```{r}
+prp(class_tr, cex = 0.8, tweak = 1)
+```
+
+## 3. Model Evaluation
+
+### 3.1 ConfusionMatrix
+
+#### A. Training Set
+
+**Class_tr_train_predict** is the data frame on the training data using the previously created classification decision tree model.
+
+```{r}
+class_tr_train_predict <- predict(class_tr, train_class,
+                                  type = "class")
+
+summary(class_tr_train_predict)
+
+# In this case, we have the data imbalance
+```
+
+Here we used data imbalance.
+
+```{r}
+confusionMatrix(class_tr_train_predict, train_class$price_nom)
+```
+
+#### B. Validation Set
+
+**class_tr_valid_predict** is the data frame on the validation data using the previously created classification decision tree model.
+
+```{r}
+class_tr_valid_predict <- predict(class_tr, valid_class,
+                                  type = "class")
+summary(class_tr_valid_predict)
+```
+
+```{r}
+confusionMatrix(class_tr_valid_predict, valid_class$price_nom)
+```
+
+#### C. Model Evaluation
+
+```{r}
+ROSE::roc.curve(valid_class$price_nom, class_tr_valid_predict)
+```
+
+## 4. Weighted Sampling
+
+The purpose of the ROSE package is to generate new synthetic examples. Since our data is imbalanced we need to increase the accuracy. So using our weighted sampling methods we learned, we were able to make the data more accurate.
+
+```{r}
+library(ROSE)
+```
+
+```{r}
+names(train_class)
+```
+
+Before the factor
+
+```{r}
+# train_class before the factor
+str(train_class)
+```
+
+```{r}
+train_class$fleet <- as.factor(train_class$fleet)
+train_class$frame_damaged <- as.factor(train_class$frame_damaged)
+train_class$franchise_dealer <- as.factor(train_class$franchise_dealer)
+train_class$has_accidents <- as.factor(train_class$has_accidents)
+train_class$is_cpo <- as.factor(train_class$is_cpo)
+train_class$is_new <- as.factor(train_class$is_new)
+train_class$is_oemcpo <- as.factor(train_class$is_oemcpo)
+train_class$salvage <- as.factor(train_class$salvage)
+train_class$theft_title <- as.factor(train_class$theft_title)
+```
+
+After the factor
+
+```{r}
+# train_class after the factor
+str(train_class)
+```
+
+Before the factor for validation set.
+
+```{r}
+# valid_class before the factor
+str(valid_class)
+```
+
+```{r}
+valid_class$fleet <- as.factor(valid_class$fleet)
+valid_class$frame_damaged <- as.factor(valid_class$frame_damaged)
+valid_class$franchise_dealer <- as.factor(valid_class$franchise_dealer)
+valid_class$has_accidents <- as.factor(valid_class$has_accidents)
+valid_class$is_cpo <- as.factor(valid_class$is_cpo)
+valid_class$is_new <- as.factor(valid_class$is_new)
+valid_class$is_oemcpo <- as.factor(valid_class$is_oemcpo)
+valid_class$salvage <- as.factor(valid_class$salvage)
+valid_class$theft_title <- as.factor(valid_class$theft_title)
+```
+
+After the factor for validation set.
+
+```{r}
+# valid_class after the factor
+str(valid_class)
+
+```
+
+```{r}
+train_class_df_rose <- ROSE(price_nom ~., data = train_class,
+                      seed = 666)$data
+
+table(train_class_df_rose$price_nom)
+# Now we have balance data and ready for the tree
+```
+
+Now we have balanced data and we are ready for the tree.
+
+## 5. Weighted Data Decision Tree
+
+**class_tr_2** is used to create a 2nd classification decision tree model for the balance data.
+
+```{r}
+class_tr_2 <- rpart(price_nom ~., data = train_class_df_rose,
+                    method = "class",
+                    maxdepth = 10)
+
+rpart.plot(class_tr_2, type = 5)
+```
+
+### 5.1 Predict Training Set
+
+**class_tr_2_train_class_predict** is the 2nd predictions data frame on the training data using the previously created classification decision tree model for the balance data.
+
+```{r}
+class_tr_2_train_class_predict <- predict(class_tr_2, train_class_df_rose,
+                                    type = "class")
+summary(class_tr_2_train_class_predict)
+```
+
+```{r}
+class_tr_2_train_class_predict <- as.factor(class_tr_2_train_class_predict)
+train_class_df_rose$price_nom <- as.factor(train_class_df_rose$price_nom)
+
+confusionMatrix(class_tr_2_train_class_predict, train_class_df_rose$price_nom)
+```
+
+### 5.2 Predict Validation Set
+
+**class_tr_2_valid_class_predict** is the 2nd predictions data frame on the validation data using the previously created classification decision tree model for the balance data.
+
+```{r}
+class_tr_2_valid_class_predict <- predict(class_tr_2, valid_class,
+                                    type = "class")
+summary(class_tr_2_valid_class_predict)
+```
+
+```{r}
+class_tr_2_valid_class_predict <- as.factor(class_tr_2_valid_class_predict)
+valid_class$price_nom <- as.factor(valid_class$price_nom)
+confusionMatrix(class_tr_2_valid_class_predict, valid_class$price_nom)
+```
+
+### 5.3 Model Evaluation
+
+```{r}
+ROSE::roc.curve(valid_class$price_nom, class_tr_2_valid_class_predict)
+```
+
+## 6. Predict New Record
+
+```{r}
+car_test_class_tr <- car_test
+car_test_class_tr
+```
+
+```{r}
+car_test_predict_class_tr <- predict(class_tr_2, newdata = car_test_class_tr,
+                                     type = "class")
+car_test_predict_class_tr
+```
+
+# IV. Best model:
+
+We used two models in our project to understand which we should use to determine what will help Mator understand how to set a price to a car. We used a kNN Model and a Classification tree. Using a kNN model is the most popular when it comes to machine learning since it can be used for both classification and regression tasks. But the purpose of the classification tree is to easily interpretable and handle nonlinear relationships.
+
+I can see that the model Classification Tree has the highest accuracy of both training and validation set it means that the classification tree model is the best model compare to the others.
+
+## Overfitting
+
+We have no over fitting in our data. This is because when comparing the model's performance on the training data versus its performance on the test data set, a significant difference was not present.
+
+### kNN model
+
+The accuracy of the training set: 0.7111 = 71.11% -\> Bad
+
+The accuracy of the validation set: 0.5964 = 59.64% -\> Bad
+
+Area under the curve (AUC): 0.680 -\> Bad
+
+### Decision Tree model
+
+The accuracy of the training set: 0.8564 = 85.64% -\> Good
+
+The accuracy of the validation set: 0.7891 = 78.91% -\> Good
+
+Area under the curve (AUC): 0.845 -\> Good
+
+=\> We will use the classification tree model to predict the car test price
+
+We are using the classification tree model because as you can see from above the accuracy for our training, validation and area under the curve is much higher for the decision tree model. Because we see the percentage of the training and validation set is more near to 100% than the kNN model. We know that having a percentage above 80% is accurate. When the AUC is near to 1, that means it would be more accurate. In our case the decision tree AUC is closer to 1 than the kNN model.
+
+# V. Predict New Record Based on Best Model
+
+We will use the Decision Tree model to predict the new used car price because of the previous information. Here are the prediction of 6 used cars that Mator need help to predict:
+
+```{r}
+car_test_predict_class_tr <- predict(class_tr_2, newdata = car_test_class_tr,
+                                     type = "class")
+car_test_predict_class_tr
+```
+
+Solution for predicting new used car price for Mator:
+
+-   Car #1: High price
+
+-   Car #2: Low price
+
+-   Car #3: High price
+
+-   Car #4: Low price
+
+-   Car #5: Low price
+
+-   Car #6: Low price
